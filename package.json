@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mqtt": "^4.2.6",
     "socket.io": "^3.0.3"
