@@ -2,6 +2,32 @@ const mqtt = require('mqtt')
 const client = mqtt.connect('tcp://35.201.182.150')
 
 const droneAPI = {
+  arm (req, res) {
+    const command = {
+      cmd: 'ARM'
+    }
+    client.publish('drone/cmd', JSON.stringify(command), err => {
+      err
+        ? res.send(err)
+        : res.json({
+          cmd: command.cmd,
+          status: 'success'
+        })
+    })
+  },
+  disArm (req, res) {
+    const command = {
+      cmd: 'DISARM'
+    }
+    client.publish('drone/cmd', JSON.stringify(command), err => {
+      err
+        ? res.send(err)
+        : res.json({
+          cmd: command.cmd,
+          status: 'success'
+        })
+    })
+  },
   takeOff (req, res) {
     const command = {
       cmd: 'TAKEOFF',
@@ -11,7 +37,7 @@ const droneAPI = {
       err
         ? res.send(err)
         : res.json({
-          cmd: 'TAKEOFF',
+          cmd: command.cmd,
           status: 'success'
         })
     })
@@ -25,7 +51,7 @@ const droneAPI = {
       err
         ? res.send(err)
         : res.json({
-          cmd: 'LAND',
+          cmd: command.cmd,
           status: 'success'
         })
     })
@@ -40,7 +66,7 @@ const droneAPI = {
       err
         ? res.send(err)
         : res.json({
-          cmd: 'GOTO',
+          cmd: command.cmd,
           status: 'success'
         })
     })
@@ -55,15 +81,24 @@ const droneAPI = {
       err
         ? res.send(err)
         : res.json({
-          cmd: 'CHANGE_FLIGHT_ALTITUDE',
+          cmd: command.cmd,
           status: 'success'
         })
     })
   },
 
-  returnToLand (req, res) {
-    client.publish('drone/cmd', JSON.stringify({ cmd: 'rtl' }), err => {
-      err ? res.send(err) : res.json({ status: 'success' })
+  changeFlightMode (req, res) {
+    const command = {
+      cmd: 'CHANGE_FLIGHT_MODE',
+      ...req.body
+    }
+    client.publish('drone/cmd', JSON.stringify(command), err => {
+      err
+        ? res.send(err)
+        : res.json({
+          cmd: command.cmd,
+          status: 'success'
+        })
     })
   }
 }
