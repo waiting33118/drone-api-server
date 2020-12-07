@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "./test/mosquitto.sh",
-    "dev": "nodemon app.js",
-    "start": "node app.js"
+    "dev": "export NODE_ENV=development && nodemon app.js",
+    "start": "export NODE_ENV=development && node app.js"
   },
   "author": "",
   "license": "ISC",
