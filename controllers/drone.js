@@ -92,7 +92,37 @@ const droneAPI = {
       cmd: 'CHANGE_FLIGHT_MODE',
       ...req.body
     }
+    client.publish('drone/cmd', JSON.stringify({ cmd: command.mode }), err => {
+      err
+        ? res.send(err)
+        : res.json({
+          cmd: command.cmd,
+          status: 'success'
+        })
+    })
+  },
+
+  changeAirSpeed (req, res) {
+    const command = {
+      cmd: 'CHANGE_SPEED',
+      ...req.body
+    }
     client.publish('drone/cmd', JSON.stringify(command), err => {
+      err
+        ? res.send(err)
+        : res.json({
+          cmd: command.cmd,
+          status: 'success'
+        })
+    })
+  },
+
+  servoContol (req, res) {
+    const command = {
+      cmd: 'CHANGE_SPEED',
+      ...req.body
+    }
+    client.publish('drone/cmd', JSON.stringify({ cmd: command.command }), err => {
       err
         ? res.send(err)
         : res.json({
