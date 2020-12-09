@@ -3,6 +3,11 @@ const client = mqtt.connect('tcp://35.201.182.150')
 
 module.exports = {
   useMqtt (io) {
+    io.on('connection', socket => {
+      console.log(new Date().toLocaleString(), socket.id)
+      socket.on('disconnect', (reason) => console.log(new Date().toLocaleString(), reason))
+    })
+
     client.on('connect', () => {
       client.subscribe('drone/message', (err, success) => {
         if (err) console.log(err)
@@ -38,7 +43,7 @@ module.exports = {
  */
 function parseMessage (message) {
   const formattedMsg = JSON.parse(message.toString())
-  console.log(formattedMsg)
+  // console.log(formattedMsg)
   return formattedMsg
 }
 
