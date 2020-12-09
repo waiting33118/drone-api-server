@@ -9,5 +9,7 @@ router.post('/land', droneAPI.land)
 router.post('/goto', droneAPI.goTo)
 router.post('/cfa', droneAPI.changeFlightAltitude)
 router.post('/cfm', droneAPI.changeFlightMode)
+router.post('/cas', droneAPI.changeAirSpeed)
+router.post('/ssc', droneAPI.servoContol)
 
 module.exports = router
