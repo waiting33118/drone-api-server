@@ -3,7 +3,7 @@ const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'https://waiting33118.github.io/drone-cloud-platform3.0',
+    origin: ['http://localhost:8080', 'https://waiting33118.github.io/drone-cloud-platform3.0'],
     methods: ['GET', 'POST']
   }
 })
