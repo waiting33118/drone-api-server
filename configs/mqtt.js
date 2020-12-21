@@ -10,12 +10,16 @@ module.exports = {
 
     client.on('connect', () => {
       client.subscribe('drone/message', (err, success) => {
-        if (err) console.log(err)
-        console.log('Subscribe Topic: drone')
+        if (err) return console.log(err)
+        console.log('Subscribe Topic: drone/message')
       })
-      client.subscribe('phone/message', (err, success) => {
-        if (err) console.log(err)
-        console.log('Subscribe Topic: phone')
+      client.subscribe('drone/cmd_ack', (err, success) => {
+        if (err) return console.log(err)
+        console.log('Subscribe Topic: drone/cmd_ack')
+      })
+      client.subscribe('drone/cmd_apm_text', (err, success) => {
+        if (err) return console.log(err)
+        console.log('Subscribe Topic: drone/cmd_apm_text')
       })
     })
 
@@ -23,12 +27,19 @@ module.exports = {
       switch (topic) {
         case 'drone/message': {
           const msg = parseMessage(message)
-          io.emit('drone_status', msg)
+          io.emit('message', msg)
           break
         }
-        case 'phone/message': {
+        case 'drone/cmd_ack': {
           const msg = parseMessage(message)
-          io.emit('phone_status', msg)
+          io.emit('ack', msg)
+          break
+        }
+        case 'drone/cmd_apm_text': {
+          // const msg = parseMessage(message)
+          // io.emit('apm', msg)
+          // break
+          console.log(message.toString())
           break
         }
       }
@@ -48,46 +59,7 @@ function parseMessage (message) {
 }
 
 /*
-{
-  drone_message: {
-    timestamp: '2020-12-03 17:52:06',
-    location: {
-      lat: '25.0430161',
-      lng: '121.536218',
-      alt: '10.02',
-      relative_alt: '-0.01',
-      heading: '85.19'
-    },
-    battery: { voltage: '12.587', current: '0.0', percentage: '0' },
-    speed: { air_speed: '0.00', gnd_speed: '0.10' },
-    attitude: { roll: '-0.32', pitch: '-0.33', yaw: '85.19' },
-    gps_status: {
-      fix_type: 'GPS_FIX_TYPE_RTK_FIXED',
-      hpop: '1.21',
-      vdop: '2.00',
-      cog: '22608',
-      gps_count: '10'
-    },
-    heartbeat: {
-      mav_type: 'MAV_TYPE_GCS',
-      mav_autopilot: 'MAV_AUTOPILOT_ARDUPILOTMEGA',
-      base_mode: '81',
-      custom_mode: 'LAND',
-      system_status: 'MAV_STATE_STANDBY',
-      is_armed: '0'
-    }
-  }
-}
-{
-  phone_message: {
-    device_id: 'c756023fc7039ee5',
-    connectivity: {},
-    signal_strength: {
-      isConnected: true,
-      isAvailable: true,
-      isFailover: false,
-      isRoaming: false
-    }
-  }
-}
- */
+  drone/cmd_ack  command feedback
+  drone/cmd_apm_text  log
+  drone/message  drone information
+*/
