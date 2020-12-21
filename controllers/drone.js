@@ -134,3 +134,11 @@ const droneAPI = {
 }
 
 module.exports = droneAPI
+
+// TODO: CHANGE_YAW   機頭轉向 params:angle types: interger 0~359
+
+// TODO: SERVO_UP  SERVO_DOWN  SERVO_STOP
+
+// TODO: GIMBAL_FRONT_BACK  1200~1800  mid 1500 params:range type:number(integer)
+
+// TODO: GIMBAL_LEFT_RIGHT 1200~1800 mid 1500  params:range type:number(integer)
