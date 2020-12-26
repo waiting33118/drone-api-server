@@ -15,7 +15,7 @@ const droneAPI = {
         })
     })
   },
-  disArm (req, res) {
+  disarm (req, res) {
     const command = {
       cmd: 'DISARM'
     }
@@ -42,7 +42,6 @@ const droneAPI = {
         })
     })
   },
-
   land (req, res) {
     const command = {
       cmd: 'LAND'
@@ -72,21 +71,6 @@ const droneAPI = {
     })
   },
 
-  changeFlightAltitude (req, res) {
-    const command = {
-      cmd: 'CHANGE_FLIGHT_ALTITUDE',
-      ...req.body
-    }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
-  },
-
   changeFlightMode (req, res) {
     const command = {
       cmd: 'CHANGE_FLIGHT_MODE',
@@ -102,9 +86,24 @@ const droneAPI = {
     })
   },
 
-  changeAirSpeed (req, res) {
+  changeSpeed (req, res) {
     const command = {
       cmd: 'CHANGE_SPEED',
+      ...req.body
+    }
+    client.publish('drone/cmd', JSON.stringify(command), err => {
+      err
+        ? res.send(err)
+        : res.json({
+          cmd: command.cmd,
+          status: 'success'
+        })
+    })
+  },
+
+  changeYaw (req, res) {
+    const command = {
+      cmd: 'CHANGE_YAW',
       ...req.body
     }
     client.publish('drone/cmd', JSON.stringify(command), err => {
@@ -122,7 +121,7 @@ const droneAPI = {
       cmd: 'CHANGE_SPEED',
       ...req.body
     }
-    client.publish('drone/cmd', JSON.stringify({ cmd: command.command }), err => {
+    client.publish('drone/cmd', JSON.stringify({ cmd: command.action }), err => {
       err
         ? res.send(err)
         : res.json({
@@ -135,9 +134,9 @@ const droneAPI = {
 
 module.exports = droneAPI
 
-// TODO: CHANGE_YAW   機頭轉向 params:angle types: interger 0~359
+// CHANGE_YAW   機頭轉向 params:angle types: interger 0~359
 
-// TODO: SERVO_UP  SERVO_DOWN  SERVO_STOP
+// SERVO_UP  SERVO_DOWN  SERVO_STOP
 
 // TODO: GIMBAL_FRONT_BACK  1200~1800  mid 1500 params:range type:number(integer)
 
