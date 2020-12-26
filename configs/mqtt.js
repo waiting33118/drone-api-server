@@ -36,10 +36,8 @@ module.exports = {
           break
         }
         case 'drone/cmd_apm_text': {
-          // const msg = parseMessage(message)
-          // io.emit('apm', msg)
-          // break
-          console.log(message.toString())
+          const msg = parseMessage(message)
+          io.emit('apm', msg)
           break
         }
       }
