@@ -10,6 +10,7 @@ router.post('/goto', droneAPI.goTo)
 router.post('/changeflightmode', droneAPI.changeFlightMode)
 router.post('/changespeed', droneAPI.changeSpeed)
 router.post('/changeyaw', droneAPI.changeYaw)
-router.post('/servocontrol', droneAPI.servoContol)
+router.post('/servocontrol', droneAPI.servoControl)
+router.post('/gimbalcontrol', droneAPI.gimbalControl)
 
 module.exports = router
