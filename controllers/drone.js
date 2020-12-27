@@ -116,12 +116,26 @@ const droneAPI = {
     })
   },
 
-  servoContol (req, res) {
+  servoControl (req, res) {
     const command = {
-      cmd: 'CHANGE_SPEED',
+      cmd: 'SERVO_ACTION',
       ...req.body
     }
     client.publish('drone/cmd', JSON.stringify({ cmd: command.action }), err => {
+      err
+        ? res.send(err)
+        : res.json({
+          cmd: command.cmd,
+          status: 'success'
+        })
+    })
+  },
+
+  gimbalControl (req, res) {
+    const command = {
+      ...req.body
+    }
+    client.publish('drone/cmd', JSON.stringify(command), err => {
       err
         ? res.send(err)
         : res.json({
@@ -138,6 +152,6 @@ module.exports = droneAPI
 
 // SERVO_UP  SERVO_DOWN  SERVO_STOP
 
-// TODO: GIMBAL_FRONT_BACK  1200~1800  mid 1500 params:range type:number(integer)
+// GIMBAL_FRONT_BACK  1200~1800  mid 1500 params:range type:number(integer)
 
-// TODO: GIMBAL_LEFT_RIGHT 1200~1800 mid 1500  params:range type:number(integer)
+// GIMBAL_LEFT_RIGHT 1200~1800 mid 1500  params:range type:number(integer)
