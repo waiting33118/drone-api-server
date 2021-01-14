@@ -6,5 +6,5 @@ gcloud app logs tail -s default
 ## deploy app
 
 ```shell
-gloud app deploy
+gcloud app deploy
 ```
