@@ -17,9 +17,13 @@ module.exports = {
         if (err) return console.log(err)
         console.log('Subscribe Topic: drone/cmd_ack')
       })
-      client.subscribe('drone/cmd_apm_text', (err, success) => {
+      client.subscribe('drone/mission_ack', (err, success) => {
         if (err) return console.log(err)
-        console.log('Subscribe Topic: drone/cmd_apm_text')
+        console.log('Subscribe Topic: drone/mission_ack')
+      })
+      client.subscribe('drone/apm_text', (err, success) => {
+        if (err) return console.log(err)
+        console.log('Subscribe Topic: drone/apm_text')
       })
     })
 
@@ -35,7 +39,12 @@ module.exports = {
           io.emit('ack', msg)
           break
         }
-        case 'drone/cmd_apm_text': {
+        case 'drone/mission_ack': {
+          const msg = parseMessage(message)
+          io.emit('mission', msg)
+          break
+        }
+        case 'drone/apm_text': {
           const msg = parseMessage(message)
           io.emit('apm', msg)
           break
@@ -48,7 +57,7 @@ module.exports = {
 /**
  * Turn buffer message to JSON format
  * @param {Buffer} message the message sent from mqtt broker
- * @returns {object} Object of message
+ * @returns {object} formated message
  */
 function parseMessage (message) {
   const formattedMsg = JSON.parse(message.toString())
@@ -58,6 +67,7 @@ function parseMessage (message) {
 
 /*
   drone/cmd_ack  command feedback
-  drone/cmd_apm_text  log
+  drone/apm_text  log
+  drone/mission_ack mission feedback
   drone/message  drone information
 */
