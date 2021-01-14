@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # deploy on gcloud
-gloud app deploy
+gcloud app deploy
