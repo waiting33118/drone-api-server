@@ -118,3 +118,6 @@ dist
 
 # google cloud ignore
 .gcloudignore
+
+# sequelize-cli config
+config.json
