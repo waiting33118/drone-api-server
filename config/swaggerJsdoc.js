@@ -1,6 +1,6 @@
 const swaggerJsdoc = require('swagger-jsdoc')
 
-module.exports.spec = swaggerJsdoc({
+const spec = swaggerJsdoc({
   swaggerDefinition: {
     basePath: '/api/v1',
     swagger: '2.0',
@@ -16,3 +16,5 @@ module.exports.spec = swaggerJsdoc({
   },
   apis: ['/backend/routes/v1/api.js']
 })
+
+module.exports = spec
