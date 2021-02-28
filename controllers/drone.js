@@ -1,56 +1,63 @@
 const mqtt = require('mqtt')
 const client = mqtt.connect('tcp://35.201.182.150')
 
-const droneAPI = {
+const DRONE_COMMAND = {
+  ARM: 'ARM',
+  DISARM: 'DISARM',
+  TAKEOFF: 'TAKEOFF',
+  LAND: 'LAND',
+  GOTO: 'GOTO',
+  CHANGE_FLIGHT_MODE: 'CHANGE_FLIGHT_MODE',
+  CHANGE_SPEED: 'CHANGE_SPEED',
+  CHANGE_YAW: 'CHANGE_YAW',
+  SERVO_ACTION: 'SERVO_ACTION',
+  GIMBAL_CONTROL: 'GIMBAL_CONTROL'
+}
+
+const droneService = {
   arm (req, res) {
-    const command = {
-      cmd: 'ARM'
-    }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
+    client.publish('drone/cmd', JSON.stringify({ cmd: DRONE_COMMAND.ARM }), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.ARM,
           status: 'success'
         })
     })
   },
+
   disarm (req, res) {
-    const command = {
-      cmd: 'DISARM'
-    }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
+    client.publish('drone/cmd', JSON.stringify({ cmd: DRONE_COMMAND.DISARM }), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.DISARM,
           status: 'success'
         })
     })
   },
+
   takeOff (req, res) {
     const command = {
-      cmd: 'TAKEOFF',
+      cmd: DRONE_COMMAND.TAKEOFF,
       ...req.body
     }
     client.publish('drone/cmd', JSON.stringify(command), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.TAKEOFF,
           status: 'success'
         })
     })
   },
+
   land (req, res) {
-    const command = {
-      cmd: 'LAND'
-    }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
+    client.publish('drone/cmd', JSON.stringify({ cmd: DRONE_COMMAND.LAND }), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.LAND,
           status: 'success'
         })
     })
@@ -58,29 +65,26 @@ const droneAPI = {
 
   goTo (req, res) {
     const command = {
-      cmd: 'GOTO',
+      cmd: DRONE_COMMAND.GOTO,
       ...req.body
     }
     client.publish('drone/cmd', JSON.stringify(command), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.GOTO,
           status: 'success'
         })
     })
   },
 
   changeFlightMode (req, res) {
-    const command = {
-      cmd: 'CHANGE_FLIGHT_MODE',
-      ...req.body
-    }
-    client.publish('drone/cmd', JSON.stringify({ cmd: command.mode }), err => {
+    const { mode } = req.body
+    client.publish('drone/cmd', JSON.stringify({ cmd: mode }), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.CHANGE_FLIGHT_MODE,
           status: 'success'
         })
     })
@@ -88,14 +92,14 @@ const droneAPI = {
 
   changeSpeed (req, res) {
     const command = {
-      cmd: 'CHANGE_SPEED',
+      cmd: DRONE_COMMAND.CHANGE_SPEED,
       ...req.body
     }
     client.publish('drone/cmd', JSON.stringify(command), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.CHANGE_SPEED,
           status: 'success'
         })
     })
@@ -103,55 +107,41 @@ const droneAPI = {
 
   changeYaw (req, res) {
     const command = {
-      cmd: 'CHANGE_YAW',
+      cmd: DRONE_COMMAND.CHANGE_YAW,
       ...req.body
     }
     client.publish('drone/cmd', JSON.stringify(command), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.CHANGE_YAW,
           status: 'success'
         })
     })
   },
 
   servoControl (req, res) {
-    const command = {
-      cmd: 'SERVO_ACTION',
-      ...req.body
-    }
-    client.publish('drone/cmd', JSON.stringify({ cmd: command.action }), err => {
+    const { action } = req.body
+    client.publish('drone/cmd', JSON.stringify({ cmd: action }), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.SERVO_ACTION,
           status: 'success'
         })
     })
   },
 
   gimbalControl (req, res) {
-    const command = {
-      ...req.body
-    }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
+    client.publish('drone/cmd', JSON.stringify({ ...req.body }), err => {
       err
-        ? res.send(err)
+        ? res.json({ err })
         : res.json({
-          cmd: command.cmd,
+          cmd: DRONE_COMMAND.GIMBAL_CONTROL,
           status: 'success'
         })
     })
   }
 }
 
-module.exports = droneAPI
-
-// CHANGE_YAW   機頭轉向 params:angle types: interger 0~359
-
-// SERVO_UP  SERVO_DOWN  SERVO_STOP
-
-// GIMBAL_FRONT_BACK  1200~1800  mid 1500 params:range type:number(integer)
-
-// GIMBAL_LEFT_RIGHT 1200~1800 mid 1500  params:range type:number(integer)
+module.exports = droneService
