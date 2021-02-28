@@ -1,8 +1,6 @@
 const express = require('express')
-const { checkStatus } = require('../../controllers')
-const droneService = require('../../controllers/drone')
-// const authService = require('../../controllers/auth')
 const router = express.Router()
+const { checkStatus, droneService } = require('../../controllers')
 
 router.get('/', checkStatus)
 
