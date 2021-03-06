@@ -20,7 +20,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      droneID: {
+      droneId: {
         type: Sequelize.STRING
       },
       createdAt: {
