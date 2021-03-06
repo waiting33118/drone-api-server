@@ -3,13 +3,12 @@ const authService = require('./auth')
 
 /**
  * Check server's status when request `GET /`
- * @param {*} req
  * @param {object} res response message
  */
 const checkStatus = (req, res) => {
   res.json({
     status: 'success',
-    msg: 'drone cloud platform API server works well!'
+    msg: 'Drone cloud platform API server works well!'
   })
 }
 
