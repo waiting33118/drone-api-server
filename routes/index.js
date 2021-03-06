@@ -1,7 +1,12 @@
 const express = require('express')
-const droneControl = require('./v1/droneControl')
+const swaggerUI = require('swagger-ui-express')
 const router = express.Router()
+const apiV1 = require('./v1/api')
+const { spec } = require('../config')
+const { checkStatus } = require('../controllers')
 
-router.use('/api/v1', droneControl)
+router.get('/', checkStatus)
+router.use('/api-docs', swaggerUI.serve, swaggerUI.setup(spec, { explorer: true }))
+router.use('/api/v1', apiV1)
 
-module.exports = router
+module.exports.routes = router

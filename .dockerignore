@@ -1,0 +1,8 @@
+node_modules
+Dockerfile*
+.git
+.gitignore
+.dockerignore
+.github
+.eslintrc.js
+.env.example
