@@ -1,14 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const { checkStatus, droneService } = require('../../controllers')
+const { droneService, authService } = require('../../controllers')
+const { checkAuthenticate } = require('../../middlewares')
 
-router.get('/', checkStatus)
+router.post('/signup', authService.signUp)
+router.post('/signin', authService.signIn)
+router.post('/refreshtoken', authService.refreshAccessToken)
 
-router.post('/signup')
-router.post('/signin')
-router.post('/signout')
-
-router.post('/arm', droneService.arm)
+router.post('/arm', checkAuthenticate, droneService.arm)
 router.post('/disarm', droneService.disarm)
 router.post('/takeoff', droneService.takeOff)
 router.post('/land', droneService.land)
@@ -20,19 +19,6 @@ router.post('/servocontrol', droneService.servoControl)
 router.post('/gimbalcontrol', droneService.gimbalControl)
 
 module.exports = router
-
-/**
- * @swagger
- * paths:
- *   /:
- *     get:
- *       tags:
- *         - Server Test
- *       description: Check API server status
- *       responses:
- *         200:
- *           description: Returns a success message
- */
 
 /**
  * @swagger
