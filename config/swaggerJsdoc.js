@@ -3,7 +3,6 @@ const swaggerJsdoc = require('swagger-jsdoc')
 const spec = swaggerJsdoc({
   swaggerDefinition: {
     basePath: '/api/v1',
-    swagger: '2.0',
     info: {
       title: 'Drone Cloud Platform API',
       version: '1.0.0',
@@ -14,7 +13,7 @@ const spec = swaggerJsdoc({
       }
     }
   },
-  apis: ['/backend/routes/v1/api.js']
+  apis: ['/backend/routes/v1/*.js']
 })
 
 module.exports = spec
