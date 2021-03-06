@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    droneID: DataTypes.STRING
+    droneId: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User'
