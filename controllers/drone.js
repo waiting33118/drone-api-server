@@ -1,147 +1,148 @@
 const mqtt = require('mqtt')
-const client = mqtt.connect('tcp://35.201.182.150')
+const { MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST } = process.env
+const publishClient = mqtt.connect(MQTT_HOST, {
+  username: MQTT_USERNAME,
+  password: MQTT_PASSWORD,
+  port: 1883
+})
 
-const DRONE_COMMAND = {
+const DRONE_ACTIONS = {
   ARM: 'ARM',
   DISARM: 'DISARM',
   TAKEOFF: 'TAKEOFF',
   LAND: 'LAND',
   GOTO: 'GOTO',
-  CHANGE_FLIGHT_MODE: 'CHANGE_FLIGHT_MODE',
   CHANGE_SPEED: 'CHANGE_SPEED',
-  CHANGE_YAW: 'CHANGE_YAW',
-  SERVO_ACTION: 'SERVO_ACTION',
-  GIMBAL_CONTROL: 'GIMBAL_CONTROL'
+  CHANGE_YAW: 'CHANGE_YAW'
 }
 
 const droneService = {
-  arm (req, res) {
-    client.publish('drone/cmd', JSON.stringify({ cmd: DRONE_COMMAND.ARM }), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.ARM,
-          status: 'success'
-        })
-    })
-  },
-
-  disarm (req, res) {
-    client.publish('drone/cmd', JSON.stringify({ cmd: DRONE_COMMAND.DISARM }), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.DISARM,
-          status: 'success'
-        })
-    })
-  },
-
-  takeOff (req, res) {
-    const command = {
-      cmd: DRONE_COMMAND.TAKEOFF,
-      ...req.body
+  async arm (req, res) {
+    const { droneId } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.ARM })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
     }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.TAKEOFF,
-          status: 'success'
-        })
-    })
   },
 
-  land (req, res) {
-    client.publish('drone/cmd', JSON.stringify({ cmd: DRONE_COMMAND.LAND }), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.LAND,
-          status: 'success'
-        })
-    })
-  },
-
-  goTo (req, res) {
-    const command = {
-      cmd: DRONE_COMMAND.GOTO,
-      ...req.body
+  async disarm (req, res) {
+    const { droneId } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.DISARM })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
     }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.GOTO,
-          status: 'success'
-        })
-    })
   },
 
-  changeFlightMode (req, res) {
-    const { mode } = req.body
-    client.publish('drone/cmd', JSON.stringify({ cmd: mode }), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.CHANGE_FLIGHT_MODE,
-          status: 'success'
-        })
-    })
-  },
-
-  changeSpeed (req, res) {
-    const command = {
-      cmd: DRONE_COMMAND.CHANGE_SPEED,
-      ...req.body
+  async takeOff (req, res) {
+    const { droneId, altitude } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.TAKEOFF, altitude })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
     }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.CHANGE_SPEED,
-          status: 'success'
-        })
-    })
   },
 
-  changeYaw (req, res) {
-    const command = {
-      cmd: DRONE_COMMAND.CHANGE_YAW,
-      ...req.body
+  async land (req, res) {
+    const { droneId } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.LAND })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
     }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.CHANGE_YAW,
-          status: 'success'
-        })
-    })
   },
 
-  servoControl (req, res) {
-    const { action } = req.body
-    client.publish('drone/cmd', JSON.stringify({ cmd: action }), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.SERVO_ACTION,
-          status: 'success'
-        })
-    })
+  async goTo (req, res) {
+    const { droneId, altitude, lng, lat } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.GOTO, altitude, lng, lat })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
+    }
   },
 
-  gimbalControl (req, res) {
-    client.publish('drone/cmd', JSON.stringify({ ...req.body }), err => {
-      err
-        ? res.json({ err })
-        : res.json({
-          cmd: DRONE_COMMAND.GIMBAL_CONTROL,
-          status: 'success'
-        })
-    })
+  async changeFlightMode (req, res) {
+    const { droneId, mode } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: mode })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
+    }
+  },
+
+  async changeSpeed (req, res) {
+    const { droneId, speed } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.CHANGE_SPEED, speed })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
+    }
+  },
+
+  async changeYaw (req, res) {
+    const { droneId, angle } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.CHANGE_YAW, angle })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
+    }
+  },
+
+  async servoControl (req, res) {
+    const { droneId, action } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: action })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
+    }
+  },
+
+  async gimbalControl (req, res) {
+    const { droneId, action, pwm } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: action, pwm })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
+    }
   }
+}
+
+/**
+ * Mqtt message publisher
+ * @param {string} droneId - specify drone ID send from fronend user
+ * @param {string} cmd
+ */
+function publishMessage (droneId, cmd) {
+  return new Promise((resolve, reject) => {
+    publishClient.publish(`${droneId}/cmd`, JSON.stringify(cmd), (err) => {
+      if (err) return reject(err)
+      resolve({
+        droneAction: cmd.cmd,
+        status: 'success'
+      })
+    })
+  })
 }
 
 module.exports = droneService
