@@ -37,7 +37,7 @@ const authService = {
         }
       })
       if (!created) {
-        return res.json({
+        return res.status(400).json({
           status: 'error',
           errCode: 602,
           msg: 'Email exsit!'
@@ -71,7 +71,7 @@ const authService = {
         return res.status(401).json({
           status: 'error',
           errCode: 701,
-          msg: 'User unregisted!'
+          msg: 'User not found!'
         })
       }
       if (!await comparePassword(password, result.password)) {
@@ -86,7 +86,13 @@ const authService = {
         status: 'success',
         msg: 'Sign in successfully!',
         accessToken: await generateAccessToken(result.id),
-        refreshToken: await generateRefreshToken(result.id)
+        refreshToken: await generateRefreshToken(result.id),
+        user: {
+          id: result.id,
+          email: result.email,
+          name: result.name,
+          droneId: result.droneId
+        }
       })
     } catch (error) {
       console.log(error)
@@ -112,7 +118,6 @@ const authService = {
         msg: 'Refresh access token successfully!',
         accessToken: await generateAccessToken(payload.userId)
       })
-      res.send()
     } catch ({ name }) {
       if (name === 'TokenExpiredError') {
         return res.status(401).json({
@@ -128,6 +133,23 @@ const authService = {
           msg: 'Refresh Token Error!'
         })
       }
+    }
+  },
+
+  async fetchUserInfo (req, res) {
+    const { userId } = req.body
+
+    try {
+      const { id, name, email, droneId } = await User.findByPk(userId, { raw: true })
+      res.json({
+        id,
+        name,
+        email,
+        droneId
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error!' })
     }
   }
 
