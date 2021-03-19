@@ -18,7 +18,8 @@
   "main": "app.js",
   "scripts": {
     "dev": "export NODE_ENV=development && nodemon app.js",
-    "start": "export NODE_ENV=production && node app.js"
+    "start": "export NODE_ENV=production && node app.js",
+    "docker-build": "docker build -f Dockerfile.prod -t 'asia.gcr.io/drone-cloud-295410/daas-backend' ."
   },
   "license": "ISC",
   "devDependencies": {
