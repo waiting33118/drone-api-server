@@ -22,14 +22,14 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^7.21.0",
+    "eslint": "^7.22.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "nodemon": "2.0.7",
     "sequelize-cli": "^6.2.0",
-    "swagger-jsdoc": "^6.0.8",
+    "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6"
   },
   "dependencies": {
@@ -39,7 +39,7 @@
     "jsonwebtoken": "^8.5.1",
     "mqtt": "^4.2.6",
     "mysql2": "^2.2.5",
-    "sequelize": "^6.5.0",
-    "socket.io": "^3.1.2"
+    "sequelize": "^6.5.1",
+    "socket.io": "^4.0.0"
   }
 }
