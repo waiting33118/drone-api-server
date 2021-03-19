@@ -24,7 +24,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -35,7 +35,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -46,7 +46,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -57,7 +57,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -68,7 +68,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -79,7 +79,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -90,7 +90,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -101,7 +101,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -112,7 +112,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -123,7 +123,7 @@ const droneService = {
       res.json(result)
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   }
 }

@@ -50,7 +50,7 @@ const authService = {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -96,7 +96,7 @@ const authService = {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   },
 
@@ -149,7 +149,7 @@ const authService = {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal Server Error!' })
+      res.status(500).end()
     }
   }
 
