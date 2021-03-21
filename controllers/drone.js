@@ -1,157 +1,148 @@
 const mqtt = require('mqtt')
-const client = mqtt.connect('tcp://35.201.182.150')
+const { MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST } = process.env
+const publishClient = mqtt.connect(MQTT_HOST, {
+  username: MQTT_USERNAME,
+  password: MQTT_PASSWORD,
+  port: 1883
+})
 
-const droneAPI = {
-  arm (req, res) {
-    const command = {
-      cmd: 'ARM'
+const DRONE_ACTIONS = {
+  ARM: 'ARM',
+  DISARM: 'DISARM',
+  TAKEOFF: 'TAKEOFF',
+  LAND: 'LAND',
+  GOTO: 'GOTO',
+  CHANGE_SPEED: 'CHANGE_SPEED',
+  CHANGE_YAW: 'CHANGE_YAW'
+}
+
+const droneService = {
+  async arm (req, res) {
+    const { droneId } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.ARM })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
     }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
-  },
-  disarm (req, res) {
-    const command = {
-      cmd: 'DISARM'
-    }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
-  },
-  takeOff (req, res) {
-    const command = {
-      cmd: 'TAKEOFF',
-      ...req.body
-    }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
-  },
-  land (req, res) {
-    const command = {
-      cmd: 'LAND'
-    }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
   },
 
-  goTo (req, res) {
-    const command = {
-      cmd: 'GOTO',
-      ...req.body
+  async disarm (req, res) {
+    const { droneId } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.DISARM })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
     }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
   },
 
-  changeFlightMode (req, res) {
-    const command = {
-      cmd: 'CHANGE_FLIGHT_MODE',
-      ...req.body
+  async takeOff (req, res) {
+    const { droneId, altitude } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.TAKEOFF, altitude })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
     }
-    client.publish('drone/cmd', JSON.stringify({ cmd: command.mode }), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
   },
 
-  changeSpeed (req, res) {
-    const command = {
-      cmd: 'CHANGE_SPEED',
-      ...req.body
+  async land (req, res) {
+    const { droneId } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.LAND })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
     }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
   },
 
-  changeYaw (req, res) {
-    const command = {
-      cmd: 'CHANGE_YAW',
-      ...req.body
+  async goTo (req, res) {
+    const { droneId, altitude, lng, lat } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.GOTO, altitude, lng, lat })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
     }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
   },
 
-  servoControl (req, res) {
-    const command = {
-      cmd: 'SERVO_ACTION',
-      ...req.body
+  async changeFlightMode (req, res) {
+    const { droneId, mode } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: mode })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
     }
-    client.publish('drone/cmd', JSON.stringify({ cmd: command.action }), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
   },
 
-  gimbalControl (req, res) {
-    const command = {
-      ...req.body
+  async changeSpeed (req, res) {
+    const { droneId, speed } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.CHANGE_SPEED, speed })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
     }
-    client.publish('drone/cmd', JSON.stringify(command), err => {
-      err
-        ? res.send(err)
-        : res.json({
-          cmd: command.cmd,
-          status: 'success'
-        })
-    })
+  },
+
+  async changeYaw (req, res) {
+    const { droneId, angle } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: DRONE_ACTIONS.CHANGE_YAW, angle })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
+    }
+  },
+
+  async servoControl (req, res) {
+    const { droneId, action } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: action })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
+    }
+  },
+
+  async gimbalControl (req, res) {
+    const { droneId, action, pwm } = req.body
+    try {
+      const result = await publishMessage(droneId, { cmd: action, pwm })
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+      res.status(500).end()
+    }
   }
 }
 
-module.exports = droneAPI
+/**
+ * Mqtt message publisher
+ * @param {string} droneId - specify drone ID send from fronend user
+ * @param {string} cmd
+ */
+function publishMessage (droneId, cmd) {
+  return new Promise((resolve, reject) => {
+    publishClient.publish(`${droneId}/cmd`, JSON.stringify(cmd), (err) => {
+      if (err) return reject(err)
+      resolve({
+        droneAction: cmd.cmd,
+        status: 'success'
+      })
+    })
+  })
+}
 
-// CHANGE_YAW   機頭轉向 params:angle types: interger 0~359
-
-// SERVO_UP  SERVO_DOWN  SERVO_STOP
-
-// GIMBAL_FRONT_BACK  1200~1800  mid 1500 params:range type:number(integer)
-
-// GIMBAL_LEFT_RIGHT 1200~1800 mid 1500  params:range type:number(integer)
+module.exports = droneService

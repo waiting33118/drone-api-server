@@ -3,22 +3,30 @@ const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server, {
   cors: {
-    origin: ['http://localhost:8080', 'https://waiting33118.github.io/drone-cloud-platform3.0', 'https://waiting33118.github.io'],
+    origin: '*',
     methods: ['GET', 'POST']
   }
 })
 const cors = require('cors')
-const dotEnv = require('dotenv')
-const { useMqtt } = require('./configs/mqtt')
-const routes = require('./routes')
+const { mqttInit, db } = require('./config')
+const { routes } = require('./routes')
 
-if (process.env.NODE_ENV === 'development') dotEnv.config()
 const { PORT } = process.env
 
-useMqtt(io)
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: false }))
 app.use(cors())
 app.use(routes)
 
-server.listen(PORT, () => console.log(`The server is listening on port ${PORT.toString()}`))
+mqttInit(io)
+
+server.listen(PORT, async () => {
+  console.log(`The server is listening on port ${PORT}`)
+  if (process.env.NODE_ENV === 'development') console.log('API docs: http://0.0.0.0:3030/api-docs')
+  try {
+    await db.authenticate()
+    console.log('Database connection has been established successfully.')
+  } catch (error) {
+    console.log('Unable to connect to the database:', error)
+  }
+})

@@ -1,27 +1,46 @@
 {
   "name": "drone-api-server",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "private": "true",
+  "description": "The backend API server of Drone Cloud Platform",
+  "author": "Tony Chung",
+  "keywords": [
+    "Drone Cloud Platform"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/waiting33118/drone-api-server.git"
+  },
+  "homepage": "https://github.com/waiting33118/drone-api-server#readme",
   "main": "app.js",
   "scripts": {
-    "test": "./test/mosquitto.sh",
     "dev": "export NODE_ENV=development && nodemon app.js",
-    "start": "export NODE_ENV=production && node app.js"
+    "start": "export NODE_ENV=production && node app.js",
+    "docker-build": "docker build -f Dockerfile.prod -t 'asia.gcr.io/drone-cloud-295410/daas-backend' ."
   },
-  "author": "",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^7.17.0",
+    "eslint": "^7.22.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1"
+    "eslint-plugin-promise": "^4.3.1",
+    "nodemon": "2.0.7",
+    "sequelize-cli": "^6.2.0",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mqtt": "^4.2.6",
-    "socket.io": "^3.0.5"
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.5.1",
+    "socket.io": "^4.0.0"
   }
 }

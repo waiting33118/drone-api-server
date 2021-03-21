@@ -1,4 +1,5 @@
 node_modules
+package-lock.json
 # Logs
 logs
 *.log
@@ -118,3 +119,6 @@ dist
 
 # google cloud ignore
 .gcloudignore
+
+# sequelize-cli config
+config.json
