@@ -23,7 +23,7 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^7.22.0",
+    "eslint": "^7.24.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
@@ -40,7 +40,7 @@
     "jsonwebtoken": "^8.5.1",
     "mqtt": "^4.2.6",
     "mysql2": "^2.2.5",
-    "sequelize": "^6.5.1",
-    "socket.io": "^4.0.0"
+    "sequelize": "^6.6.2",
+    "socket.io": "^4.0.1"
   }
 }
