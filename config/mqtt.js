@@ -21,7 +21,6 @@ const mqttInit = (io) => {
 
     socket.on('disconnect', (reason) => {
       console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), reason)
-      subscribeClient.end()
     })
 
     socket.on('mqttSubscribe', (user) => {
