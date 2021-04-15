@@ -8,7 +8,7 @@ const io = require('socket.io')(server, {
   }
 })
 const cors = require('cors')
-const { mqttInit, db } = require('./config')
+const { mqttInit, signalInit, db } = require('./config')
 const { routes } = require('./routes')
 
 const { PORT } = process.env
@@ -19,6 +19,7 @@ app.use(cors())
 app.use(routes)
 
 mqttInit(io)
+signalInit(io)
 
 server.listen(PORT, async () => {
   console.log(`The server is listening on port ${PORT}`)

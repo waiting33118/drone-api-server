@@ -15,66 +15,58 @@ test.on('error', (error) => console.log(error))
 
 const mqttInit = (io) => {
   io.on('connection', socket => {
-    // Create MQTT connection when socket established
-    const subscribeClient = mqtt.connect(MQTT_HOST, {
-      username: MQTT_USERNAME,
-      password: MQTT_PASSWORD,
-      port: 1883
-    })
+    let subscribeClient
 
-    // New MQTT connection message
-    subscribeClient.on('connect', () => console.log('New mqtt connection established', 'clientId:', subscribeClient.options.clientId))
-
-    // New socket connection message
     console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), 'socketId:', socket.id)
 
-    // disconnect message
     socket.on('disconnect', (reason) => {
       console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), reason)
-      subscribeClient.end()
     })
 
-    // Get drone ID and subscribe mqtt topics
     socket.on('mqttSubscribe', (user) => {
+      subscribeClient = mqtt.connect(MQTT_HOST, {
+        username: MQTT_USERNAME,
+        password: MQTT_PASSWORD,
+        port: 1883
+      })
+
+      subscribeClient.on('connect', () => console.log('New mqtt connection established', 'clientId:', subscribeClient.options.clientId))
       console.log(`\nUser: [${user.name}] ID: [${user.droneId}] connected! Start subscribing topics`)
-      // subscribe
+
       subscribeClient.subscribe(topicGenerator(user.droneId), (err, success) => {
-        if (!err) {
-          console.log(success)
+        if (err) {
+          console.log(err)
           return
         }
-        console.log(err)
+        console.log(success)
+      })
+
+      subscribeClient.on('message', (topic, payload) => {
+        switch (topic.slice(topic.indexOf('/') + 1)) {
+          case 'message':
+            socket.emit(topic, parseMessage(payload))
+            break
+          case 'cmd_ack':
+            socket.emit(topic, parseMessage(payload))
+            break
+          case 'mission_ack':
+            socket.emit(topic, parseMessage(payload))
+            break
+          case 'apm_text':
+            socket.emit(topic, parseMessage(payload))
+            break
+        }
       })
     })
 
     socket.on('mqttUnsubscribe', (droneId) => {
-      // unsubscribe
       subscribeClient.unsubscribe(topicGenerator(droneId), (err) => {
-        if (!err) {
-          console.log(`${droneId} Unsubscribe all topics`)
-          subscribeClient.end()
+        if (err) {
+          console.log(err)
           return
         }
-        console.log(err)
+        console.log(`${droneId} Unsubscribe all topics`)
       })
-    })
-
-    // listen mqtt message and send it to frontend clients
-    subscribeClient.on('message', (topic, payload) => {
-      switch (topic.slice(topic.indexOf('/') + 1)) {
-        case 'message':
-          socket.emit(topic, parseMessage(payload))
-          break
-        case 'cmd_ack':
-          socket.emit(topic, parseMessage(payload))
-          break
-        case 'mission_ack':
-          socket.emit(topic, parseMessage(payload))
-          break
-        case 'apm_text':
-          socket.emit(topic, parseMessage(payload))
-          break
-      }
     })
   })
 }
