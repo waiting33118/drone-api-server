@@ -8,6 +8,9 @@ const signalInit = (io) => {
     socket.on('sendOffer', offer => {
       const roomId = [...socket.rooms.keys()][1]
       console.log(`recieve ${socket.id}'s offer`)
+      if (typeof offer === 'string') {
+        offer = JSON.parse(offer)
+      }
       socket.to(roomId).emit('offer', offer)
     })
 
