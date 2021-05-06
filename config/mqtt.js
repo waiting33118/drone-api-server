@@ -20,6 +20,7 @@ const mqttInit = (io) => {
     console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), 'socketId:', socket.id)
 
     socket.on('disconnect', (reason) => {
+      console.log(`Socket disconnect:${socket.id}`)
       console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), reason)
     })
 
