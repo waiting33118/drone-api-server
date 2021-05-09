@@ -8,6 +8,8 @@ RUN npm i
 
 COPY . .
 
+ENV NODE_ENV=development
+
 EXPOSE 3030
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "npx", "nodemon", "app.js" ]
