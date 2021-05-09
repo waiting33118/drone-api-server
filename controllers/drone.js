@@ -1,10 +1,7 @@
-const mqtt = require('mqtt')
+const { mqtt } = require('../libs')
+
 const { MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST } = process.env
-const publishClient = mqtt.connect(MQTT_HOST, {
-  username: MQTT_USERNAME,
-  password: MQTT_PASSWORD,
-  port: 1883
-})
+const mqttClient = mqtt.connect(MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST, 1883)
 
 const DRONE_ACTIONS = {
   ARM: 'ARM',
@@ -135,7 +132,7 @@ const droneService = {
  */
 function publishMessage (droneId, cmd) {
   return new Promise((resolve, reject) => {
-    publishClient.publish(`${droneId}/cmd`, JSON.stringify(cmd), (err) => {
+    mqttClient.publish(`${droneId}/cmd`, JSON.stringify(cmd), (err) => {
       if (err) return reject(err)
       resolve({
         droneAction: cmd.cmd,
