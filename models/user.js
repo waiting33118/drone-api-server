@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
+      User.hasOne(models.Token)
     }
   };
   User.init({
@@ -19,14 +20,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     name: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    droneId: DataTypes.STRING
+    droneId: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'User'
