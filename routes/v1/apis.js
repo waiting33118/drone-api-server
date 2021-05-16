@@ -6,9 +6,10 @@ const { authMiddleware } = require('../../middlewares')
 router.post('/auth/signup', authService.signUp)
 router.post('/auth/signin', authService.signIn)
 router.post('/auth/renewToken', authService.renewToken)
+router.post('/auth/signout', authService.signOut)
 
-router.get('/user', authMiddleware.verifyToken, authMiddleware.checkDuplicateLogin, userService.fetchUserInfo)
-router.post('/user/edit', authMiddleware.verifyToken, userService.editUserInfo)
+router.get('/user', authMiddleware.verifyToken, authMiddleware.confirmLoginStatus, userService.fetchUserInfo)
+// router.post('/user/edit', authMiddleware.verifyToken, userService.editUserInfo)
 
 router.post('/drone/arm', droneService.arm)
 router.post('/drone/disarm', droneService.disarm)
