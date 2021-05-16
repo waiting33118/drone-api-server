@@ -8,7 +8,7 @@ const authService = {
 
     if (
       !(email && password && droneId && checkPassword) ||
-      !(email.trim() === '' && password.trim() === '' && droneId.trim() === '' && checkPassword.trim() === '')
+      (email.trim() === '' || password.trim() === '' || droneId.trim() === '' || checkPassword.trim() === '')
     ) {
       return res.status(400).json({
         errCode: 1000,
@@ -52,7 +52,9 @@ const authService = {
   async signIn (req, res) {
     const { email, password } = req.body
 
-    if (!(email && password) || email.trim() === '' || password.trim() === '') {
+    if (!(email && password) ||
+      (email.trim() === '' || password.trim() === '')
+    ) {
       return res.status(400).json({
         errCode: 1100,
         reason: log.signinFieldIncorrect()
@@ -84,7 +86,7 @@ const authService = {
       res
         .cookie('accessToken', accessToken, {
           httpOnly: true,
-          maxAge: 1000 * 60 * 5,
+          maxAge: 1000 * 60 * 10,
           secure: process.env.NODE_ENV === 'production'
         })
         .cookie('refreshToken', refreshToken, {
@@ -94,6 +96,32 @@ const authService = {
         })
         .json({
           msg: 'User login!'
+        })
+    } catch (error) {
+      console.log(error.message)
+      res.status(500).json({
+        msg: 'Internal Server Error'
+      })
+    }
+  },
+
+  async signOut (req, res) {
+    const { userId } = req.body
+    try {
+      await storeTokensInDatabase(userId, '', '')
+      res
+        .cookie('accessToken', '', {
+          httpOnly: true,
+          expires: new Date(1970, 1, 1, 0, 0, 0, 0),
+          secure: process.env.NODE_ENV === 'production'
+        })
+        .cookie('refreshToken', '', {
+          httpOnly: true,
+          expires: new Date(1970, 1, 1, 0, 0, 0, 0),
+          secure: process.env.NODE_ENV === 'production'
+        })
+        .json({
+          msg: 'User logout!'
         })
     } catch (error) {
       console.log(error.message)
@@ -114,7 +142,7 @@ const authService = {
       res
         .cookie('accessToken', newAccessToken, {
           httpOnly: true,
-          maxAge: 1000 * 60 * 5,
+          maxAge: 1000 * 60 * 10,
           secure: process.env.NODE_ENV === 'production'
         })
         .cookie('refreshToken', newRefreshToken, {
@@ -127,13 +155,6 @@ const authService = {
         })
     } catch (error) {
       switch (error.name) {
-        case 'TokenExpiredError': {
-          res.status(401).json({
-            errCode: 2001,
-            reason: log.tokenExpired()
-          })
-          return
-        }
         case 'JsonWebTokenError': {
           res.status(401).json({
             errCode: 2002,
@@ -142,6 +163,7 @@ const authService = {
           return
         }
         default: {
+          console.log(error.message)
           res.status(500).json({
             msg: 'Internal Server Error'
           })
