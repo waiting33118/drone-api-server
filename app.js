@@ -15,7 +15,8 @@ const { db, log, mqttInit, signalInit } = require('./libs')
 const { PORT } = process.env
 
 app.use(cors({
-  origin: ['http://localhost:8080', 'https://localhost:8080']
+  origin: ['http://localhost:8080', 'https://localhost:8080'],
+  credentials: true
 }))
 app.use(express.json())
 app.use(cookieParser())
