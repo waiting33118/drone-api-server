@@ -1,12 +1,16 @@
-const signalInit = (io) => {
+const log = require('./log')
+
+module.exports = function signalServer (io) {
   io.on('connection', socket => {
+    let roomId
+
     socket.on('joinRoom', droneId => {
       socket.join(droneId)
-      console.log('Join Room', socket.rooms)
+      roomId = [...socket.rooms.keys()][1]
+      log.webSocketJoinRoom(socket, roomId)
     })
 
     socket.on('sendOffer', offer => {
-      const roomId = [...socket.rooms.keys()][1]
       console.log(`recieve ${socket.id}'s offer`)
       if (typeof offer === 'string') {
         offer = JSON.parse(offer)
@@ -15,17 +19,13 @@ const signalInit = (io) => {
     })
 
     socket.on('sendAnswer', answer => {
-      const roomId = [...socket.rooms.keys()][1]
       console.log(`recieve ${socket.id}'s answer`)
       socket.to(roomId).emit('answer', answer)
     })
 
     socket.on('sendCandidate', candidate => {
-      const roomId = [...socket.rooms.keys()][1]
       console.log(`recieve ${socket.id}'s candidate`)
       socket.to(roomId).emit('candidate', candidate)
     })
   })
 }
-
-module.exports = signalInit

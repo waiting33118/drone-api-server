@@ -1,158 +1,214 @@
-const {
-  encryptPassword,
-  comparePassword,
-  generateAccessToken,
-  generateRefreshToken,
-  verifyRefreshToken
-} = require('../helpers')
+const { log, authUtils } = require('../libs')
 const db = require('../models')
-const { User } = db
+const { User, Token } = db
 
 const authService = {
   async signUp (req, res) {
-    const { email, name, password, droneId } = req.body
+    const { email, name, password, checkPassword, droneId } = req.body
 
-    if (email === '' || name === '' || password === '') {
+    if (
+      !(email && password && droneId && checkPassword) ||
+      (email.trim() === '' || password.trim() === '' || droneId.trim() === '' || checkPassword.trim() === '')
+    ) {
       return res.status(400).json({
-        status: 'error',
-        errCode: 600,
-        msg: 'Email,Name,Password are required!'
+        errCode: 1000,
+        reason: log.signupFieldIncorrect()
       })
     }
     if (password.length < 8) {
       return res.status(400).json({
-        status: 'error',
-        errCode: 601,
-        msg: 'Password must longer than 8 characters!'
+        errCode: 1001,
+        reason: log.signupPasswordLengthIncorrect()
+      })
+    }
+
+    if (password !== checkPassword) {
+      return res.status(400).json({
+        errCode: 1002,
+        reason: log.signupPasswordunMatchCheckPassword()
       })
     }
 
     try {
-      const [user, created] = await User.findOrCreate({
-        where: { email },
-        defaults: {
-          name,
-          password: await encryptPassword(password),
-          droneId
-        }
-      })
-      if (!created) {
+      const result = await findOrCreateUser(email, name, password, droneId)
+
+      if (!result[1]) {
         return res.status(400).json({
-          status: 'error',
-          errCode: 602,
-          msg: 'Email exsit!'
+          errCode: 1003,
+          reason: log.signupEmailExist()
         })
       }
       res.status(201).json({
-        status: 'success',
-        msg: 'User created!',
-        user
+        msg: 'Create user successfully!'
       })
     } catch (error) {
-      console.log(error)
-      res.status(500).end()
+      console.log(error.message)
+      res.status(500).json({
+        msg: 'Internal Server Error'
+      })
     }
   },
 
   async signIn (req, res) {
     const { email, password } = req.body
 
-    if (email === '' || password === '') {
+    if (!(email && password) ||
+      (email.trim() === '' || password.trim() === '')
+    ) {
       return res.status(400).json({
-        status: 'error',
-        errCode: 700,
-        msg: 'Email, Password are required!'
+        errCode: 1100,
+        reason: log.signinFieldIncorrect()
       })
     }
 
     try {
-      const result = await User.findOne({ where: { email }, raw: true })
+      const result = await findUserIsExist(email)
+
       if (!result) {
         return res.status(401).json({
-          status: 'error',
-          errCode: 701,
-          msg: 'User not found!'
-        })
-      }
-      if (!await comparePassword(password, result.password)) {
-        return res.status(401).json({
-          status: 'error',
-          errCode: 702,
-          msg: 'Wrong password!'
+          errCode: 1101,
+          reason: log.signinUserNotFound()
         })
       }
 
-      res.json({
-        status: 'success',
-        msg: 'Sign in successfully!',
-        accessToken: await generateAccessToken(result.id),
-        refreshToken: await generateRefreshToken(result.id),
-        user: {
-          id: result.id,
-          email: result.email,
-          name: result.name,
-          droneId: result.droneId
-        }
-      })
+      if (!await authUtils.comparePassword(password, result.password)) {
+        return res.status(401).json({
+          errCode: 1102,
+          reason: log.signinInvalidPassword()
+        })
+      }
+
+      const accessToken = await authUtils.signToken({ userId: result.id }, process.env.ACCESS_TOKEN_SECRET, '10m')
+      const refreshToken = await authUtils.signToken({ userId: result.id }, process.env.REFRESH_TOKEN_SECRET, '1d')
+
+      await storeTokensInDatabase(result.id, accessToken, refreshToken)
+
+      res
+        .cookie('accessToken', accessToken, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 10,
+          secure: process.env.NODE_ENV === 'production'
+        })
+        .cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60 * 24,
+          secure: process.env.NODE_ENV === 'production'
+        })
+        .json({
+          msg: 'User login!'
+        })
     } catch (error) {
-      console.log(error)
-      res.status(500).end()
+      console.log(error.message)
+      res.status(500).json({
+        msg: 'Internal Server Error'
+      })
     }
   },
 
-  async refreshAccessToken (req, res) {
-    const { refreshToken } = req.body
-
-    if (!refreshToken) {
-      return res.status(403).json({
-        status: 'error',
-        errCode: 706,
-        msg: 'Refresh token missing!'
-      })
-    }
-
-    try {
-      const payload = await verifyRefreshToken(refreshToken)
-      res.json({
-        status: 'success',
-        msg: 'Refresh access token successfully!',
-        accessToken: await generateAccessToken(payload.userId)
-      })
-    } catch ({ name }) {
-      if (name === 'TokenExpiredError') {
-        return res.status(401).json({
-          status: 'error',
-          errCode: 707,
-          msg: 'Refresh Token Expired!'
-        })
-      }
-      if (name === 'JsonWebTokenError') {
-        return res.status(401).json({
-          status: 'error',
-          errCode: 708,
-          msg: 'Refresh Token Error!'
-        })
-      }
-    }
-  },
-
-  async fetchUserInfo (req, res) {
+  async signOut (req, res) {
     const { userId } = req.body
+    try {
+      await storeTokensInDatabase(userId, '', '')
+      res
+        .cookie('accessToken', '', {
+          httpOnly: true,
+          expires: new Date(1970, 1, 1, 0, 0, 0, 0),
+          secure: process.env.NODE_ENV === 'production'
+        })
+        .cookie('refreshToken', '', {
+          httpOnly: true,
+          expires: new Date(1970, 1, 1, 0, 0, 0, 0),
+          secure: process.env.NODE_ENV === 'production'
+        })
+        .json({
+          msg: 'User logout!'
+        })
+    } catch (error) {
+      console.log(error.message)
+      res.status(500).json({
+        msg: 'Internal Server Error'
+      })
+    }
+  },
+
+  async renewToken (req, res) {
+    const { refreshToken } = req.cookies
 
     try {
-      const { id, name, email, droneId } = await User.findByPk(userId, { raw: true })
-      res.json({
-        id,
-        name,
-        email,
-        droneId
-      })
+      const { userId } = await authUtils.verifyToken(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+      const newAccessToken = await authUtils.signToken({ userId }, process.env.ACCESS_TOKEN_SECRET, '10m')
+      const newRefreshToken = await authUtils.signToken({ userId }, process.env.REFRESH_TOKEN_SECRET, '1d')
+      await storeTokensInDatabase(userId, newAccessToken, newRefreshToken)
+      res
+        .cookie('accessToken', newAccessToken, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 10,
+          secure: process.env.NODE_ENV === 'production'
+        })
+        .cookie('refreshToken', newRefreshToken, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60 * 24,
+          secure: process.env.NODE_ENV === 'production'
+        })
+        .json({
+          msg: 'User refresh token!'
+        })
     } catch (error) {
-      console.log(error)
-      res.status(500).end()
+      switch (error.name) {
+        case 'JsonWebTokenError': {
+          res.status(401).json({
+            errCode: 2002,
+            reason: log.tokenError()
+          })
+          return
+        }
+        default: {
+          console.log(error.message)
+          res.status(500).json({
+            msg: 'Internal Server Error'
+          })
+        }
+      }
     }
   }
+}
 
+async function findOrCreateUser (email, name, password, droneId) {
+  return await User.findOrCreate({
+    where: { email },
+    defaults: {
+      name: name === '' ? 'Pilot' : name,
+      password: await authUtils.encryptPassword(password),
+      droneId
+    }
+  })
+}
+
+async function findUserIsExist (email) {
+  return await User.findOne({
+    where: { email }
+  })
+}
+
+async function storeTokensInDatabase (userId, accessToken, refreshToken) {
+  const result = await Token.findOne({ where: { userId } })
+  if (!result) {
+    await Token.create({
+      userId,
+      accessToken,
+      refreshToken
+    })
+    return
+  }
+
+  await Token.update({
+    accessToken,
+    refreshToken
+  }, {
+    where: {
+      userId
+    }
+  })
 }
 
 module.exports = authService
