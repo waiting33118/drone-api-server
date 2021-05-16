@@ -9,6 +9,5 @@
 |1100| auth/signIn | Email and Password are required! |
 |1101| auth/signIn | User not found! |
 |1102| auth/signIn | Invalid password! |
-|2001| middleware/verifyToken | Token Expired!(need renew token) |
 |2002| middleware/verifyToken | Token Error! |
-|3000| middleware/checkDuplicateLogin | User has already login at another device! |
+|3001| middleware/confirmLoginStatus | User login at another device! |
