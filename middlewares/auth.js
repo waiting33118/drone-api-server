@@ -3,16 +3,17 @@ const db = require('../models')
 const { Token } = db
 
 module.exports = {
-  async checkDuplicateLogin (req, res, next) {
+  async confirmLoginStatus (req, res, next) {
     const { accessToken } = req.cookies
     const { userId } = req.body
 
     const user = await Token.findOne({
       where: { userId }
     })
+
     if (user.accessToken !== accessToken) {
       res.status(403).json({
-        errCode: 3000,
+        errCode: 3001,
         reason: log.duplicateLogin()
       })
       return
@@ -32,17 +33,17 @@ module.exports = {
       next()
     } catch (error) {
       switch (error.name) {
-        case 'TokenExpiredError': {
+        case 'JsonWebTokenError': {
           res.status(401).json({
-            errCode: 2001,
-            reason: log.tokenExpired()
+            errCode: 2002,
+            reason: log.tokenError()
           })
           return
         }
         default: {
-          res.status(401).json({
-            errCode: 2002,
-            reason: log.tokenError()
+          console.log(error.message)
+          res.status(500).json({
+            msg: 'Internal Server Error'
           })
         }
       }
