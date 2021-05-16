@@ -1,6 +1,6 @@
 module.exports = {
   timeStamp () {
-    console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }))
+    return new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })
   },
 
   serverStarted (port) {
@@ -95,5 +95,9 @@ module.exports = {
 
   duplicateLogin () {
     return 'User has already login at another device!'
+  },
+
+  alreadySignout () {
+    return 'User has already signout!'
   }
 }
