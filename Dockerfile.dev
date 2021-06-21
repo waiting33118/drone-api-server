@@ -8,8 +8,6 @@ RUN npm i
 
 COPY . /app/
 
-RUN npm run build
-
 EXPOSE 3030 3031
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "dev" ]
