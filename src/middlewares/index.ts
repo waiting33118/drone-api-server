@@ -14,7 +14,7 @@ const renewTokenAndPassToNext = async (
   next()
 }
 
-export const verifyToken = async (
+export const verifyTokens = async (
   req: Request,
   res: Response,
   next: NextFunction
