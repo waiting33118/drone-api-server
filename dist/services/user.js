@@ -46,19 +46,17 @@ exports.default = {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, , 3]);
                         userRepo = typeorm_1.getRepository(User_1.User);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
                         return [4 /*yield*/, userRepo.findOne({ where: { uuid: res.locals.uuid } })];
-                    case 2:
+                    case 1:
                         user = _a.sent();
                         if (user) {
                             res
                                 .cookie('access_token', res.locals.accessToken, {
                                 httpOnly: true,
                                 maxAge: 1000 * 60 * 5,
-                                secure: NODE_ENV === 'production',
+                                secure: true,
                                 sameSite: 'none'
                             })
                                 .json({
@@ -68,13 +66,13 @@ exports.default = {
                             return [2 /*return*/];
                         }
                         res.status(401).json({ msg: 'Unauthorize, Please login again' });
-                        return [3 /*break*/, 4];
-                    case 3:
+                        return [3 /*break*/, 3];
+                    case 2:
                         error_1 = _a.sent();
                         console.log(error_1);
                         res.status(500).json({ msg: 'Internal server error' });
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

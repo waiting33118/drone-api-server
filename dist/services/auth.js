@@ -66,10 +66,10 @@ exports.default = {
                                 .json({ msg: 'Password must equal or longer than 8 character' });
                             return [2 /*return*/];
                         }
-                        userRepo = typeorm_1.getRepository(User_1.User);
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 5, , 6]);
+                        userRepo = typeorm_1.getRepository(User_1.User);
                         return [4 /*yield*/, userRepo.findOne({ where: { email: email } })];
                     case 2:
                         user = _b.sent();
@@ -112,10 +112,10 @@ exports.default = {
                             res.status(400).json({ msg: 'Required field is empty' });
                             return [2 /*return*/];
                         }
-                        userRepo = typeorm_1.getRepository(User_1.User);
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 6, , 7]);
+                        userRepo = typeorm_1.getRepository(User_1.User);
                         return [4 /*yield*/, userRepo.findOne({ where: { email: email } })];
                     case 2:
                         user = _b.sent();
@@ -139,13 +139,13 @@ exports.default = {
                             .cookie('access_token', accessToken, {
                             httpOnly: true,
                             maxAge: 1000 * 60 * 5,
-                            secure: NODE_ENV === 'production',
+                            secure: true,
                             sameSite: 'none'
                         })
                             .cookie('refresh_token', refreshToken, {
                             httpOnly: true,
                             maxAge: 1000 * 60 * 60 * 24 * 30,
-                            secure: NODE_ENV === 'production',
+                            secure: true,
                             sameSite: 'none'
                         })
                             .json({ msg: 'User login' });
@@ -161,37 +161,27 @@ exports.default = {
         });
     },
     refreshToken: function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                res
-                    .cookie('access_token', res.locals.accessToken, {
-                    httpOnly: true,
-                    maxAge: 1000 * 60 * 5,
-                    secure: NODE_ENV === 'production',
-                    sameSite: 'none'
-                })
-                    .send('refreshed');
-                return [2 /*return*/];
-            });
-        });
+        res
+            .cookie('access_token', res.locals.accessToken, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 5,
+            secure: true,
+            sameSite: 'none'
+        })
+            .send('refreshed');
     },
     logout: function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                res
-                    .clearCookie('access_token', {
-                    httpOnly: true,
-                    secure: NODE_ENV === 'production',
-                    sameSite: 'none'
-                })
-                    .clearCookie('refresh_token', {
-                    httpOnly: true,
-                    secure: NODE_ENV === 'production',
-                    sameSite: 'none'
-                })
-                    .send('logout');
-                return [2 /*return*/];
-            });
-        });
+        res
+            .clearCookie('access_token', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        })
+            .clearCookie('refresh_token', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        })
+            .send('logout');
     }
 };

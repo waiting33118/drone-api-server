@@ -18,7 +18,7 @@ var routes_1 = __importDefault(require("./routes"));
 var websocket_1 = __importDefault(require("./services/websocket"));
 var database_1 = __importDefault(require("./services/database"));
 var _a = process.env, _b = _a.HTTP_PORT, HTTP_PORT = _b === void 0 ? '3030' : _b, _c = _a.HTTPS_PORT, HTTPS_PORT = _c === void 0 ? '3031' : _c, NODE_ENV = _a.NODE_ENV, _d = _a.PRIVATE_KEY_PATH, PRIVATE_KEY_PATH = _d === void 0 ? '/private.key' : _d, _e = _a.CERTIFICATE_PATH, CERTIFICATE_PATH = _e === void 0 ? '/certificate.crt' : _e;
-console.log('Private key path:', PRIVATE_KEY_PATH, 'Cert file path:', CERTIFICATE_PATH);
+console.log("Private key path: " + PRIVATE_KEY_PATH + "\nCert file path: " + CERTIFICATE_PATH);
 var options = {
     key: fs_1.readFileSync(PRIVATE_KEY_PATH),
     cert: fs_1.readFileSync(CERTIFICATE_PATH)

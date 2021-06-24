@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyToken = void 0;
+exports.verifyTokens = void 0;
 var helpers_1 = require("../helpers");
 var renewTokenAndPassToNext = function (res, next, token) { return __awaiter(void 0, void 0, void 0, function () {
     var uuid, accessToken;
@@ -55,7 +55,7 @@ var renewTokenAndPassToNext = function (res, next, token) { return __awaiter(voi
         }
     });
 }); };
-var verifyToken = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+var verifyTokens = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, access_token, refresh_token, error_1, error_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -86,4 +86,4 @@ var verifyToken = function (req, res, next) { return __awaiter(void 0, void 0, v
         }
     });
 }); };
-exports.verifyToken = verifyToken;
+exports.verifyTokens = verifyTokens;
