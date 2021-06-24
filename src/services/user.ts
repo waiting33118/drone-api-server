@@ -7,15 +7,15 @@ const { NODE_ENV }: ENV_VARIABLE = process.env
 
 export default {
   async getUserInfo(req: Request, res: Response) {
-    const userRepo = getRepository(User)
     try {
+      const userRepo = getRepository(User)
       const user = await userRepo.findOne({ where: { uuid: res.locals.uuid } })
       if (user) {
         res
           .cookie('access_token', res.locals.accessToken, {
             httpOnly: true,
             maxAge: 1000 * 60 * 5,
-            secure: NODE_ENV === 'production',
+            secure: true,
             sameSite:'none'
           })
           .json({
