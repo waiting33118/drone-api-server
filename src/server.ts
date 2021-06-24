@@ -22,10 +22,7 @@ const {
 }: ENV_VARIABLE = process.env
 
 console.log(
-  'Private key path:',
-  PRIVATE_KEY_PATH,
-  'Cert file path:',
-  CERTIFICATE_PATH
+  `Private key path: ${PRIVATE_KEY_PATH}\nCert file path: ${CERTIFICATE_PATH}`
 )
 const options = {
   key: readFileSync(PRIVATE_KEY_PATH),
