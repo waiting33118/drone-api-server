@@ -12,6 +12,7 @@ import { ENV_VARIABLE } from './types'
 import router from './routes'
 import useSocketIO from './services/websocket'
 import useDatabase from './services/database'
+import useRabbitmq from './services/rabbitmq'
 
 const {
   HTTP_PORT = '3030',
@@ -61,6 +62,7 @@ export const io = new Server(server, {
 
 useSocketIO()
 useDatabase()
+useRabbitmq()
 
 httpServer.listen(+HTTP_PORT, () =>
   console.log(`HTTP server is listening on port ${HTTP_PORT}`)
