@@ -33,8 +33,8 @@ export default {
       return
     }
 
-    const userRepo = getRepository(User)
     try {
+      const userRepo = getRepository(User)
       const user = await userRepo.findOne({ where: { email } })
       if (user) {
         res.status(400).json({ msg: 'Email exist' })
@@ -64,8 +64,8 @@ export default {
       return
     }
 
-    const userRepo = getRepository(User)
     try {
+      const userRepo = getRepository(User)
       const user = await userRepo.findOne({ where: { email } })
       if (!user) {
         res.status(401).json({ msg: 'Account not found' })
@@ -84,13 +84,13 @@ export default {
         .cookie('access_token', accessToken, {
           httpOnly: true,
           maxAge: 1000 * 60 * 5,
-          secure: NODE_ENV === 'production',
+          secure: true,
           sameSite: 'none'
         })
         .cookie('refresh_token', refreshToken, {
           httpOnly: true,
-          maxAge: 1000 * 60 * 60 * 24 * 30,
-          secure: NODE_ENV === 'production',
+          maxAge: 1000 * 60 * 60 * 24 * 7,
+          secure: true,
           sameSite: 'none'
         })
         .json({ msg: 'User login' })
@@ -100,26 +100,27 @@ export default {
     }
   },
 
-  async refreshToken(req: Request, res: Response) {
+  refreshToken(req: Request, res: Response) {
     res
       .cookie('access_token', res.locals.accessToken, {
         httpOnly: true,
         maxAge: 1000 * 60 * 5,
-        secure: NODE_ENV === 'production',
+        secure: true,
         sameSite: 'none'
       })
       .send('refreshed')
   },
-  async logout(req: Request, res: Response) {
+
+  logout(req: Request, res: Response) {
     res
       .clearCookie('access_token', {
         httpOnly: true,
-        secure: NODE_ENV === 'production',
+        secure: true,
         sameSite: 'none'
       })
       .clearCookie('refresh_token', {
         httpOnly: true,
-        secure: NODE_ENV === 'production',
+        secure: true,
         sameSite: 'none'
       })
       .send('logout')

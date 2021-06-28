@@ -12,6 +12,7 @@ import { ENV_VARIABLE } from './types'
 import router from './routes'
 import useSocketIO from './services/websocket'
 import useDatabase from './services/database'
+import useRabbitmq from './services/rabbitmq'
 
 const {
   HTTP_PORT = '3030',
@@ -22,10 +23,7 @@ const {
 }: ENV_VARIABLE = process.env
 
 console.log(
-  'Private key path:',
-  PRIVATE_KEY_PATH,
-  'Cert file path:',
-  CERTIFICATE_PATH
+  `Private key path: ${PRIVATE_KEY_PATH}\nCert file path: ${CERTIFICATE_PATH}`
 )
 const options = {
   key: readFileSync(PRIVATE_KEY_PATH),
@@ -64,6 +62,7 @@ export const io = new Server(server, {
 
 useSocketIO()
 useDatabase()
+useRabbitmq()
 
 httpServer.listen(+HTTP_PORT, () =>
   console.log(`HTTP server is listening on port ${HTTP_PORT}`)

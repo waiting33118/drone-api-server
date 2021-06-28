@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { verifyToken } from '../../middlewares'
+import { verifyTokens } from '../../middlewares'
 import auth from '../../services/auth'
 import user from '../../services/user'
 const router = express.Router()
@@ -10,9 +10,9 @@ router.get('/', (req: Request, res: Response) =>
 
 router.post('/auth/signup', auth.signup)
 router.post('/auth/login', auth.login)
-router.get('/auth/token', verifyToken, auth.refreshToken)
+router.get('/auth/token', verifyTokens, auth.refreshToken)
 router.post('/auth/logout', auth.logout)
 
-router.get('/user/me', verifyToken, user.getUserInfo)
+router.get('/user/me', verifyTokens, user.getUserInfo)
 
 export default router
