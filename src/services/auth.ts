@@ -2,12 +2,13 @@ import { Request, Response } from 'express'
 import { getRepository } from 'typeorm'
 import { User } from '../entity/User'
 import { compareEncryption, encryptPlaintext, signJwtToken } from '../helpers'
-import { ENV_VARIABLE, LoginField, SignupField } from '../types'
+import { LoginField, SignupField } from '../types'
 import { v4 } from 'uuid'
 
-const { NODE_ENV }: ENV_VARIABLE = process.env
-
 export default {
+  /**
+   * User signup
+   */
   async signup(req: Request, res: Response) {
     const { email, password, checkPassword, droneId }: SignupField = req.body
 
@@ -56,6 +57,9 @@ export default {
     }
   },
 
+  /**
+   * User login
+   */
   async login(req: Request, res: Response) {
     const { email, password }: LoginField = req.body
 
@@ -100,6 +104,9 @@ export default {
     }
   },
 
+  /**
+   * Issue new access token to the frontend for user validation
+   */
   refreshToken(req: Request, res: Response) {
     res
       .cookie('access_token', res.locals.accessToken, {
@@ -108,9 +115,12 @@ export default {
         secure: true,
         sameSite: 'none'
       })
-      .send('refreshed')
+      .json({ msg: 'refreshed' })
   },
 
+  /**
+   * User logout
+   */
   logout(req: Request, res: Response) {
     res
       .clearCookie('access_token', {

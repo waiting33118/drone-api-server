@@ -35,3 +35,7 @@ export type CookiePayload = {
   access_token: string
   refresh_token: string
 }
+
+export type EditIDPayload = {
+  droneId: string
+}
