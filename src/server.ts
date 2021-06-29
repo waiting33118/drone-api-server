@@ -22,9 +22,6 @@ const {
   CERTIFICATE_PATH = '/certificate.crt'
 }: ENV_VARIABLE = process.env
 
-console.log(
-  `Private key path: ${PRIVATE_KEY_PATH}\nCert file path: ${CERTIFICATE_PATH}`
-)
 const options = {
   key: readFileSync(PRIVATE_KEY_PATH),
   cert: readFileSync(CERTIFICATE_PATH)

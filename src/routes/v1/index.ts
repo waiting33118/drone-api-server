@@ -14,5 +14,6 @@ router.get('/auth/token', verifyTokens, auth.refreshToken)
 router.post('/auth/logout', auth.logout)
 
 router.get('/user/me', verifyTokens, user.getUserInfo)
+router.post('/user/droneId', verifyTokens, user.editUserDroneId)
 
 export default router
