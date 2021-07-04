@@ -118,5 +118,5 @@ dist
 .pnp.*
 
 # ssl
-cert1.pem
+fullchain1.pem
 privkey1.pem
