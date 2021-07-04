@@ -6,11 +6,11 @@ import { connection } from '../services/rabbitmq'
 
 export default () => {
   io.on('connection', (socket: Socket) => {
-    console.log('Websocket connected:', socket.id)
-    let channel: amqp.Channel | undefined
+    console.log(new Date().toLocaleString(), 'Websocket connected:', socket.id)
+    let channel: amqp.Channel | null = null
     let droneId: string
 
-    socket.on('create-rabbitmq-connection', async (receiveId: string) => {
+    socket.on('establish-rabbitmq-connection', async (receiveId: string) => {
       droneId = receiveId
       try {
         channel = await connection.createChannel()
@@ -18,8 +18,6 @@ export default () => {
 
         await bindTopicQueue('drone')
         await bindTopicQueue('webrtc')
-
-        socket.emit('rabbitmq-queue-isReady')
       } catch (error) {
         console.log(error)
       }
@@ -47,6 +45,7 @@ export default () => {
             },
             { noAck: true }
           )
+          socket.emit('queue-created', queue.queue)
         }
       }
     })
@@ -55,7 +54,8 @@ export default () => {
       try {
         if (channel) {
           await channel.close()
-          channel = undefined
+          channel = null
+          console.log(`${socket.id} close rabbitmq channel`)
         }
       } catch (error) {
         console.log(error)
@@ -83,10 +83,14 @@ export default () => {
     })
 
     socket.on('disconnect', async (reason) => {
-      console.log(`Websocket disconnected:${socket.id} Reason:${reason}`)
+      console.log(
+        new Date().toLocaleString(),
+        `Websocket disconnected:${socket.id} Reason:${reason}`
+      )
       try {
         if (channel) {
           await channel.close()
+          console.log(`${socket.id} close rabbitmq channel`)
         }
       } catch (error) {
         console.log(error)
