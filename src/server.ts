@@ -18,8 +18,8 @@ const {
   HTTP_PORT = '3030',
   HTTPS_PORT = '3031',
   NODE_ENV,
-  PRIVATE_KEY_PATH = '/private.key',
-  CERTIFICATE_PATH = '/certificate.crt'
+  PRIVATE_KEY_PATH = './privkey1.pem',
+  CERTIFICATE_PATH = './fullchain1.pem'
 }: ENV_VARIABLE = process.env
 
 const options = {
