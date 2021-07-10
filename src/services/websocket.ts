@@ -24,7 +24,7 @@ export default () => {
 
       async function bindTopicQueue(topicName: string) {
         if (channel) {
-          const queue = await channel.assertQueue('', {
+          const queue = await channel.assertQueue(`${receiveId}-${topicName}`, {
             exclusive: true,
             autoDelete: true
           })
