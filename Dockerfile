@@ -6,9 +6,7 @@ COPY package.json /app/
 
 RUN npm i
 
-COPY . /app/
-
-RUN npm run build
+COPY . /app
 
 EXPOSE 3030 3031
 
