@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import { User } from '../entity/User'
-import { ENV_VARIABLE } from '../types'
 
 const {
   MYSQL_HOSTNAME,
@@ -9,7 +8,7 @@ const {
   MYSQL_USERNAME,
   MYSQL_PASSWORD,
   NODE_ENV
-}: ENV_VARIABLE = process.env
+} = process.env
 
 export default async () => {
   try {

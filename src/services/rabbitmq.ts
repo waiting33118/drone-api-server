@@ -1,13 +1,12 @@
 import amqp from 'amqplib'
-import { ENV_VARIABLE } from '../types'
-
 export let connection: amqp.Connection
+
 const {
   RABBITMQ_HOSTNAME,
   RABBITMQ_USERNAME,
   RABBITMQ_PASSWORD,
   RABBITMQ_PORT = '5672'
-}: ENV_VARIABLE = process.env
+} = process.env
 
 export default async () => {
   try {
