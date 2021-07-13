@@ -24,10 +24,13 @@ export default () => {
 
       async function bindTopicQueue(topicName: string) {
         if (channel) {
-          const queue = await channel.assertQueue(`${receiveId}-${topicName}`, {
-            exclusive: true,
-            autoDelete: true
-          })
+          const queue = await channel.assertQueue(
+            `${socket.id}-${receiveId}-${topicName}`,
+            {
+              exclusive: true,
+              autoDelete: true
+            }
+          )
           await channel.bindQueue(
             queue.queue,
             'drone',
