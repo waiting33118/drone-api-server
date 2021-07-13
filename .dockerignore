@@ -1,5 +1,6 @@
 node_modules
-dist
-Dockerfile.*
+package-lock.json
+src
+Dockerfile
 .git
 .env.example

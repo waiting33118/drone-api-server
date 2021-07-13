@@ -1,5 +1,4 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import http from 'http'
@@ -8,8 +7,7 @@ import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
 import { readFileSync } from 'fs'
 import { Server } from 'socket.io'
-import { ENV_VARIABLE } from './types'
-import router from './routes'
+import routes from './routes'
 import useSocketIO from './services/websocket'
 import useDatabase from './services/database'
 import useRabbitmq from './services/rabbitmq'
@@ -20,7 +18,7 @@ const {
   NODE_ENV,
   PRIVATE_KEY_PATH = './privkey1.pem',
   CERTIFICATE_PATH = './fullchain1.pem'
-}: ENV_VARIABLE = process.env
+} = process.env
 
 const options = {
   key: readFileSync(PRIVATE_KEY_PATH),
@@ -42,7 +40,7 @@ app.use(
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }))
-app.use(router)
+app.use(routes)
 
 const httpServer = http.createServer(app)
 const httpsServer = https.createServer(options, app)

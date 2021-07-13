@@ -1,21 +1,17 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { ENV_VARIABLE } from '../types'
 
-const { JWT_TOKEN_SECRET }: ENV_VARIABLE = process.env
+const { JWT_TOKEN_SECRET } = process.env
 
-export const encryptPlaintext = async (plainText: string) => {
+const encryptPlaintext = async (plainText: string) => {
   return await bcrypt.hash(plainText, 10)
 }
 
-export const compareEncryption = async (
-  plainText: string,
-  encryption: string
-) => {
+const compareEncryption = async (plainText: string, encryption: string) => {
   return await bcrypt.compare(plainText, encryption)
 }
 
-export const signJwtToken = (
+const signJwtToken = (
   expireDuration: string | number,
   payload: object
 ): Promise<string> | undefined => {
@@ -26,15 +22,15 @@ export const signJwtToken = (
         JWT_TOKEN_SECRET,
         { expiresIn: expireDuration },
         (err, token) => {
-          if (err) reject(err)
-          if (token) resolve(token)
+          if (err) return reject(err)
+          if (token) return resolve(token)
         }
       )
     })
   }
 }
 
-export const verifyJwtToken = (token: string): Promise<object> => {
+const verifyJwtToken = (token: string): Promise<object> => {
   return new Promise((resolve, reject) => {
     if (JWT_TOKEN_SECRET) {
       jwt.verify(token, JWT_TOKEN_SECRET, (err, payload) => {
@@ -44,3 +40,5 @@ export const verifyJwtToken = (token: string): Promise<object> => {
     }
   })
 }
+
+export { encryptPlaintext, compareEncryption, signJwtToken, verifyJwtToken }
