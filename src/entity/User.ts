@@ -1,19 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('Users')
+@Entity('User')
 export class User {
-  @PrimaryGeneratedColumn()
-  id!: number
+  @PrimaryGeneratedColumn('uuid')
+  id!: number;
 
-  @Column({ nullable: false })
-  email!: string
+  @Column({ type: 'varchar', length: 100, nullable: false })
+  email!: string;
 
-  @Column({ nullable: false })
-  password!: string
+  @Column({ type: 'varchar', nullable: false })
+  password!: string;
 
-  @Column({ nullable: false })
-  droneId!: string
-
-  @Column({ nullable: false })
-  uuid!: string
+  @Column({ type: 'varchar', length: 35, nullable: false })
+  droneId!: string;
 }
