@@ -1,6 +1,2 @@
 node_modules
-package-lock.json
-src
-Dockerfile
-.git
-.env.example
+.env*
