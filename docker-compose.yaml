@@ -1,8 +1,0 @@
-version: '3.9'
-services:
-  swagger-editor:
-    image: swaggerapi/swagger-editor
-    ports:
-      - '3032:8080'
-    container_name: 'api-editor'
-    restart: 'on-failure'
