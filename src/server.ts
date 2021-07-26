@@ -1,67 +1,58 @@
-import 'dotenv/config'
-import express from 'express'
-import cors from 'cors'
-import http from 'http'
-import https from 'https'
-import cookieParser from 'cookie-parser'
-import helmet from 'helmet'
-import { readFileSync } from 'fs'
-import { Server } from 'socket.io'
-import routes from './routes'
-import useSocketIO from './services/websocket'
-import useDatabase from './services/database'
-import useRabbitmq from './services/rabbitmq'
+import { config } from 'dotenv';
+if (process.env.NODE_ENV !== 'production') config();
+import express from 'express';
+import cors from 'cors';
+import http from 'http';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import { createLogger, format, transports } from 'winston';
+import { Server } from 'socket.io';
+import routes from './routes';
+import useSocketIO from './services/websocket';
+import useDatabase from './services/database';
+import useRabbitmq from './services/rabbitmq';
 
-const {
-  HTTP_PORT = '3030',
-  HTTPS_PORT = '3031',
-  NODE_ENV,
-  PRIVATE_KEY_PATH = './privkey1.pem',
-  CERTIFICATE_PATH = './fullchain1.pem'
-} = process.env
+const app = express();
+const server = http.createServer(app);
 
-const options = {
-  key: readFileSync(PRIVATE_KEY_PATH),
-  cert: readFileSync(CERTIFICATE_PATH)
-} as https.ServerOptions
+const { combine, timestamp, printf } = format;
+const logger = createLogger({
+  format: combine(
+    timestamp(),
+    printf(({ level, message, timestamp }) => {
+      return `[${level}]-[${timestamp}] ${message}`;
+    })
+  ),
+  transports: [new transports.Console()]
+});
 
-const app = express()
-app.use(helmet())
+app.use(helmet());
 app.use(
   cors({
-    origin:
-      NODE_ENV === 'production'
-        ? 'https://aiotlab-drone-cloud.web.app'
-        : 'http://localhost:8080',
+    origin: process.env.FRONTEND_URL,
     credentials: true,
     maxAge: 300
   })
-)
-app.use(express.json())
-app.use(cookieParser())
-app.use(express.urlencoded({ extended: false }))
-app.use(routes)
+);
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
+app.use(routes);
 
-const httpServer = http.createServer(app)
-const httpsServer = https.createServer(options, app)
-
-const server = NODE_ENV === 'production' ? httpsServer : httpServer
-export const io = new Server(server, {
+const io = new Server(server, {
   cors: {
-    origin:
-      NODE_ENV === 'production'
-        ? 'https://aiotlab-drone-cloud.web.app'
-        : 'http://localhost:8080'
+    origin: process.env.FRONTEND_URL
   }
-})
+});
 
-useSocketIO()
-useDatabase()
-useRabbitmq()
+useSocketIO();
+useDatabase();
+useRabbitmq();
 
-httpServer.listen(+HTTP_PORT, () =>
-  console.log(`HTTP server is listening on port ${HTTP_PORT}`)
-)
-httpsServer.listen(+HTTPS_PORT, () =>
-  console.log(`HTTPS server is listening on port ${HTTPS_PORT}`)
-)
+server.listen(Number(process.env.BACKEND_SERVICE_SERVICE_PORT), () => {
+  logger.info(
+    `Server is listening on port ${process.env.BACKEND_SERVICE_SERVICE_PORT}`
+  );
+});
+
+export { logger, io };

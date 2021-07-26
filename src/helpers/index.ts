@@ -1,44 +1,35 @@
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
-const { JWT_TOKEN_SECRET } = process.env
+const SECRET = process.env.JWT_TOKEN_SECRET || '';
 
 const encryptPlaintext = async (plainText: string) => {
-  return await bcrypt.hash(plainText, 10)
-}
+  return await bcrypt.hash(plainText, 10);
+};
 
 const compareEncryption = async (plainText: string, encryption: string) => {
-  return await bcrypt.compare(plainText, encryption)
-}
+  return await bcrypt.compare(plainText, encryption);
+};
 
 const signJwtToken = (
   expireDuration: string | number,
   payload: object
-): Promise<string> | undefined => {
-  if (JWT_TOKEN_SECRET) {
-    return new Promise((resolve, reject) => {
-      jwt.sign(
-        payload,
-        JWT_TOKEN_SECRET,
-        { expiresIn: expireDuration },
-        (err, token) => {
-          if (err) return reject(err)
-          if (token) return resolve(token)
-        }
-      )
-    })
-  }
-}
-
-const verifyJwtToken = (token: string): Promise<object> => {
+): Promise<string> => {
   return new Promise((resolve, reject) => {
-    if (JWT_TOKEN_SECRET) {
-      jwt.verify(token, JWT_TOKEN_SECRET, (err, payload) => {
-        if (err) reject(err)
-        if (payload) resolve(payload)
-      })
-    }
-  })
-}
+    jwt.sign(payload, SECRET, { expiresIn: expireDuration }, (err, token) => {
+      if (err) return reject(err);
+      if (token) return resolve(token);
+    });
+  });
+};
 
-export { encryptPlaintext, compareEncryption, signJwtToken, verifyJwtToken }
+const verifyJwtToken = (token: string): Promise<JwtPayload> => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, SECRET, (err, payload) => {
+      if (err) reject(err);
+      if (payload) resolve(payload);
+    });
+  });
+};
+
+export { encryptPlaintext, compareEncryption, signJwtToken, verifyJwtToken };

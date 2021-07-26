@@ -12,14 +12,14 @@ type DroneRemoteAction =
   | 'SERVO_DOWN'
   | 'SERVO_STOP'
   | 'GIMBAL_LEFT_RIGHT'
-  | 'GIMBAL_FRONT_BACK'
+  | 'GIMBAL_FRONT_BACK';
 
 export interface Command {
-  cmd: DroneRemoteAction
-  altitude?: number
-  lng?: number
-  lat?: number
-  speed?: number
-  angle?: number
-  pwm?: number
+  cmd: DroneRemoteAction;
+  altitude?: number;
+  lng?: number;
+  lat?: number;
+  speed?: number;
+  angle?: number;
+  pwm?: number;
 }

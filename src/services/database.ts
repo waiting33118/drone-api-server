@@ -1,29 +1,30 @@
-import 'reflect-metadata'
-import { createConnection } from 'typeorm'
-import { User } from '../entity/User'
+import 'reflect-metadata';
+import { createConnection } from 'typeorm';
+import { User } from '../entity/User';
+import { logger } from '../server';
 
 const {
-  MYSQL_HOSTNAME,
-  MYSQL_PORT = '3306',
-  MYSQL_USERNAME,
-  MYSQL_PASSWORD,
+  MYSQL_SERVICE_SERVICE_HOST,
+  MYSQL_SERVICE_SERVICE_PORT = '3306',
+  MYSQL_SERVICE_USER,
+  MYSQL_SERVICE_PASSWORD,
   NODE_ENV
-} = process.env
+} = process.env;
 
 export default async () => {
   try {
     await createConnection({
       type: 'mysql',
-      host: MYSQL_HOSTNAME,
-      port: +MYSQL_PORT,
-      username: MYSQL_USERNAME,
-      password: MYSQL_PASSWORD,
+      host: MYSQL_SERVICE_SERVICE_HOST,
+      port: +MYSQL_SERVICE_SERVICE_PORT,
+      username: MYSQL_SERVICE_USER,
+      password: MYSQL_SERVICE_PASSWORD,
       database: 'drone_cloud',
       entities: [User],
       synchronize: NODE_ENV !== 'production'
-    })
-    console.log('Connect to database successfully')
+    });
+    logger.info('Connect to database successfully');
   } catch (error) {
-    console.log(error)
+    logger.error(error.message);
   }
-}
+};

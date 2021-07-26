@@ -1,24 +1,28 @@
-import amqp from 'amqplib'
-export let connection: amqp.Connection
+import amqp from 'amqplib';
+import { logger } from '../server';
+let channel: amqp.Channel;
 
 const {
-  RABBITMQ_HOSTNAME,
-  RABBITMQ_USERNAME,
-  RABBITMQ_PASSWORD,
-  RABBITMQ_PORT = '5672'
-} = process.env
+  RABBITMQ_SERVICE_SERVICE_HOST,
+  RABBITMQ_SERVICE_SERVICE_PORT = '5672',
+  RABBITMQ_SERVICE_USER,
+  RABBITMQ_SERVICE_PASSWORD
+} = process.env;
 
 export default async () => {
   try {
-    connection = await amqp.connect({
+    const connection = await amqp.connect({
       protocol: 'amqp',
-      hostname: RABBITMQ_HOSTNAME,
-      port: +RABBITMQ_PORT,
-      username: RABBITMQ_USERNAME,
-      password: RABBITMQ_PASSWORD
-    })
-    console.log('Connect to Rabbitmq successfully')
+      hostname: RABBITMQ_SERVICE_SERVICE_HOST,
+      port: +RABBITMQ_SERVICE_SERVICE_PORT,
+      username: RABBITMQ_SERVICE_USER,
+      password: RABBITMQ_SERVICE_PASSWORD
+    });
+    channel = await connection.createChannel();
+    logger.info('Connect to Rabbitmq successfully');
   } catch (error) {
-    console.log(error)
+    logger.error(error.message);
   }
-}
+};
+
+export { channel };

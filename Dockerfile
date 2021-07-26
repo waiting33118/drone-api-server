@@ -2,12 +2,14 @@ FROM node:lts-alpine
 
 WORKDIR /app
 
-COPY package.json /app/
+COPY package.json  /app/
 
 RUN npm i
 
-COPY . /app
+COPY ./ /app/
 
-EXPOSE 3030 3031
+RUN npm run build
+
+EXPOSE 3080
 
 CMD [ "npm", "start" ]
