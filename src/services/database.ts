@@ -25,6 +25,6 @@ export default async () => {
     });
     logger.info('Connect to database successfully');
   } catch (error) {
-    logger.error(error.message);
+    logger.error(error);
   }
 };

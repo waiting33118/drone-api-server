@@ -51,7 +51,7 @@ export default {
       await userRepo.save(newUser);
       res.status(201).json({ msg: 'User created' });
     } catch (error) {
-      logger.error(error.message);
+      logger.error(error);
       res.status(500).json({ msg: 'Internal server error' });
     }
   },
@@ -98,7 +98,7 @@ export default {
         })
         .json({ msg: 'User login' });
     } catch (error) {
-      logger.error(error.message);
+      logger.error(error);
       res.status(500).json({ msg: 'Internal server error' });
     }
   },
