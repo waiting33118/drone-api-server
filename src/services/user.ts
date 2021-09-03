@@ -26,7 +26,7 @@ export default {
           });
       }
     } catch (error) {
-      logger.error(error.message);
+      logger.error(error);
       res.status(500).json({ msg: 'Internal server error' });
     }
   },
@@ -45,7 +45,7 @@ export default {
       });
       res.json({ msg: 'Drone ID updated' });
     } catch (error) {
-      logger.error(error.message);
+      logger.error(error);
       res.status(500).json({ msg: 'Internal server error' });
     }
   }

@@ -21,7 +21,7 @@ export default async () => {
     channel = await connection.createChannel();
     logger.info('Connect to Rabbitmq successfully');
   } catch (error) {
-    logger.error(error.message);
+    logger.error(error);
   }
 };
 

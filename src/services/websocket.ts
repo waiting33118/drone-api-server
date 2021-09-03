@@ -34,7 +34,7 @@ export default () => {
           socket.emit('queue-created', queue.queue);
         });
       } catch (error) {
-        logger.error(error.message);
+        logger.error(error);
       }
 
       async function assertTopicQueue() {
@@ -104,7 +104,7 @@ export default () => {
           logger.info(`${socket.id} cancel consume message trigger by event`);
         }
       } catch (error) {
-        logger.error(error.message);
+        logger.error(error);
       }
     });
 
@@ -120,7 +120,7 @@ export default () => {
           );
         }
       } catch (error) {
-        logger.error(error.message);
+        logger.error(error);
       }
     });
 

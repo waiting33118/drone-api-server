@@ -1,24 +1,24 @@
-export type SignupField = {
+export interface SignupField {
   email: string;
   password: string;
   checkPassword: string;
   droneId: string;
-};
+}
 
-export type LoginField = {
+export interface LoginField {
   email: string;
   password: string;
-};
+}
 
-export type TokenPayload = {
+export interface TokenPayload {
   uuid: string;
-};
+}
 
-export type CookiePayload = {
+export interface CookiePayload {
   access_token: string;
   refresh_token: string;
-};
+}
 
-export type EditIDPayload = {
+export interface EditIDPayload {
   droneId: string;
-};
+}
