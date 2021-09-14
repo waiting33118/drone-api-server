@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Flight } from './Flight';
 
-@Entity('User')
+@Entity({ name: 'User' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: number;
@@ -13,4 +14,7 @@ export class User {
 
   @Column({ type: 'varchar', length: 35, nullable: false })
   droneId!: string;
+
+  @OneToMany(() => Flight, (flight) => flight.user)
+  flights!: Flight[];
 }
