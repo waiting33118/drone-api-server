@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
 import { User } from './User';
 
 @Entity({ name: 'Flight' })
@@ -11,4 +18,10 @@ export class Flight {
 
   @ManyToOne(() => User, (user) => user.flights, { cascade: true })
   user!: User;
+
+  @UpdateDateColumn({
+    name: 'update_timestamp',
+    type: 'datetime'
+  })
+  update!: Date;
 }
