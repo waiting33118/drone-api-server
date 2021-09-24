@@ -17,6 +17,8 @@ router.post('/auth/logout', auth.logout);
 router.get('/user/me', verifyTokens, user.getUserInfo);
 router.post('/user/droneId', verifyTokens, user.editUserDroneId);
 
+router.get('/drone/records', verifyTokens, drone.getFlightRecords);
+router.get('/drone/records/:id', verifyTokens, drone.getFlightRecord);
 router.post('/drone/records', verifyTokens, drone.saveFlightRecords);
 
 export default router;
