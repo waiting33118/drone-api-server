@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
+import { Flight } from '../entity/Flight';
 import { User } from '../entity/User';
 import { logger } from '../server';
 
@@ -20,8 +21,9 @@ export default async () => {
       username: MYSQL_SERVICE_USER,
       password: MYSQL_SERVICE_PASSWORD,
       database: 'drone_cloud',
-      entities: [User],
-      synchronize: NODE_ENV !== 'production'
+      entities: [User, Flight],
+      synchronize: NODE_ENV !== 'production',
+      logging: process.env.NODE_ENV === 'production' ? false : 'all'
     });
     logger.info('Connect to database successfully');
   } catch (error) {
