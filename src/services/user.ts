@@ -22,7 +22,8 @@ export default {
           })
           .json({
             email: user.email,
-            droneId: user.droneId
+            droneId: user.droneId,
+            isAdmin: user.isAdmin
           });
       }
     } catch (error) {
