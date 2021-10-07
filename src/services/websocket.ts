@@ -16,6 +16,7 @@ export default () => {
     let droneId: string;
     let queues: Replies.AssertQueue[] = [];
     let consumers: Replies.Consume[] = [];
+    let adminQueue: Replies.AssertQueue;
 
     socket.on('establish-rabbitmq-connection', async (receiveId: string) => {
       droneId = receiveId;
@@ -28,7 +29,7 @@ export default () => {
 
         await assertTopicQueue();
         await bindTopicQueue();
-        await comsumeTopicQueue();
+        await consumeTopicQueue();
 
         queues.forEach((queue) => {
           socket.emit('queue-created', queue.queue);
@@ -60,7 +61,7 @@ export default () => {
         }
       }
 
-      async function comsumeTopicQueue() {
+      async function consumeTopicQueue() {
         for (let i = 0; i < queues.length; i++) {
           const consume = await channel.consume(
             queues[i].queue,
@@ -76,6 +77,35 @@ export default () => {
           );
           consumers.push(consume);
         }
+      }
+    });
+
+    socket.on('drone-admin', async () => {
+      try {
+        adminQueue = await channel.assertQueue('admin-drone', {
+          autoDelete: true,
+          durable: false
+        });
+        await channel.bindQueue(
+          adminQueue.queue,
+          RABBITMQ.EXCHANGE_NAME,
+          `*.phone.${RABBITMQ.QUEUE_TOPICS[0]}`
+        );
+        const consume = await channel.consume(
+          adminQueue.queue,
+          (msg) => {
+            if (msg) {
+              socket.emit(
+                `admin-${RABBITMQ.QUEUE_TOPICS[0]}-topic`,
+                JSON.parse(msg.content.toString())
+              );
+            }
+          },
+          { noAck: true }
+        );
+        consumers.push(consume);
+      } catch (error) {
+        logger.error(error);
       }
     });
 
@@ -97,7 +127,7 @@ export default () => {
 
     socket.on('cancel-consume', async () => {
       try {
-        if (queues.length && consumers.length) {
+        if (consumers.length) {
           await cancelConsuming();
           queues = [];
           consumers = [];
@@ -111,7 +141,7 @@ export default () => {
     socket.on('disconnect', async (reason) => {
       logger.info(`Websocket disconnected:${socket.id} Reason:${reason}`);
       try {
-        if (queues.length && consumers.length) {
+        if (consumers.length) {
           await cancelConsuming();
           queues = [];
           consumers = [];
