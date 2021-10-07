@@ -15,6 +15,9 @@ export class User {
   @Column({ type: 'varchar', length: 35, nullable: false })
   droneId!: string;
 
+  @Column({ type: 'boolean', nullable: false, default: false })
+  isAdmin!: boolean;
+
   @OneToMany(() => Flight, (flight) => flight.user)
   flights!: Flight[];
 }
