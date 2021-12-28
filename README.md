@@ -4,7 +4,7 @@
 ![Docker pull](https://img.shields.io/docker/pulls/waiting33118/drone-cloud-backend)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?logo=docker&logoColor=white)
 
-This is the backend server of [Drone Cloud Platform](https://github.com/waiting33118/drone-cloud-platform3.0), used for handle drone communication between app and frontend
+This is the backend server of [Drone Cloud Platform](https://github.com/waiting33118/drone-cloud-platform3.0), used for handle drone communication between drone's android app and the cloud frontend
 
 # Project Setup
 
