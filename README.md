@@ -51,3 +51,23 @@ _The server will now run on http://localhost:3030_
 ```bash
 npm run build
 ```
+
+# Drone Cloud System Setup
+
+## Prerequisite
+
+- Node.js >v14.18.1
+- Docker
+- Docker compose
+
+## FrontEnd
+
+```bash
+git clone https://github.com/waiting33118/drone-cloud-platform3.0
+```
+
+Please read the [README.md](https://github.com/waiting33118/drone-cloud-platform3.0#readme) section to start the frontend localhost server
+
+## Backend API server, RabbitMQ broker and Drone Simulator
+
+**Please make sure the backend env file is setup before run docker compose**
