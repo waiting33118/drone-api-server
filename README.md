@@ -58,9 +58,9 @@ npm run build
 
 ## Prerequisite
 
-- Node.js >v14.18.1
+- Node.js >=v14.18.1
 - Docker
-- Docker compose
+- Docker-compose
 
 ## FrontEnd
 
@@ -78,14 +78,28 @@ git clone https://github.com/waiting33118/drone-cloud-platform3.0
 
 ```bash
 # attach mode
-docker compose up
+docker-compose up
 
 # detached mode
-docker compose up -d
+docker-compose up -d
 
 # follow logs
-docker compose logs -f
+docker-compose logs -f
 
 # stop all containers(remove volumes)
-docker compose down -v
+docker-compose down -v
+```
+
+### Initial Drone Simulator
+
+Attach the "sitl" container
+
+```bash
+docker attach drone-api-server_sitl
+```
+
+Run script to build sitl
+
+```bash
+./start.sh
 ```
