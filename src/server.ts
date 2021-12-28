@@ -10,7 +10,7 @@ import { Server } from 'socket.io';
 import routes from './routes';
 import useSocketIO from './services/websocket';
 import useDatabase from './services/database';
-import useRabbitmq from './services/rabbitmq';
+import { connectToRabbitmq as useRabbitmq } from './services/rabbitmq';
 
 const app = express();
 const server = http.createServer(app);
