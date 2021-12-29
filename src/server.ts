@@ -13,6 +13,7 @@ import { connectToDatabase as useDatabase } from './services/database';
 import { connectToRabbitmq as useRabbitmq } from './services/rabbitmq';
 
 const app = express();
+app.set('trust proxy', process.env.NODE_ENV === 'production');
 const server = http.createServer(app);
 
 const { combine, timestamp, printf } = format;
