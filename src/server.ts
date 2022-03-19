@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== 'production') config();
 import express from 'express';
 import cors from 'cors';
 import http from 'http';
+import https from 'https';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { createLogger, format, transports } from 'winston';
@@ -14,7 +15,13 @@ import { connectToRabbitmq as useRabbitmq } from './services/rabbitmq';
 
 const app = express();
 app.set('trust proxy', process.env.NODE_ENV === 'production');
-const server = http.createServer(app);
+const server =
+  process.env.NODE_ENV === 'production'
+    ? https.createServer(
+        { key: process.env.TLS_KEY, cert: process.env.TLS_CERT },
+        app
+      )
+    : http.createServer(app);
 
 const { combine, timestamp, printf } = format;
 const logger = createLogger({
